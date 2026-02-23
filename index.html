@@ -81,6 +81,8 @@
 
 #main-content {
     display: none;
+    width: 100%;
+    height: 100%;
 }
 
     html {
@@ -1737,7 +1739,10 @@
         overlay.style.display = 'none';
         
         // Show main content
-        mainContent.style.display = 'block';
+        mainContent.style.display = 'flex';
+mainContent.style.width = '100%';
+mainContent.style.height = '100%';
+
         
         // Dispatch resize event for responsive canvas
         window.dispatchEvent(new Event('resize'));
