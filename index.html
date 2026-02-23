@@ -1391,6 +1391,128 @@
         pointer-events: none;
         z-index: 12;
     }
+    
+@media (max-width: 480px) {
+    .hud-layer {
+        grid-template-columns: repeat(4, 1fr);
+        padding: 5px 3px calc(env(safe-area-inset-bottom, 20px) + 5px) 3px;
+        gap: 3px;
+    }
+    .capsule {
+        padding: 4px 8px;
+        min-width: auto;
+        font-size: 12px;
+    }
+    .capsule span { font-size: 12px; }
+    .capsule label { font-size: 8px; }
+    #menu-message { font-size: 11px; }
+    .ios-segment {
+        padding: 5px 8px;
+        font-size: 11px;
+        min-width: 36px;
+    }
+}
+
+@media (max-width: 380px) {
+    .ios-card {
+        padding: 24px 16px;
+        width: 95%;
+    }
+    #overlay { padding: 10px; }
+    #devConsoleBtn {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+        right: 15px;
+        bottom: calc(env(safe-area-inset-bottom, 20px) + 15px);
+    }
+}
+
+@media (max-width: 360px) {
+    .hud-layer {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        padding: 4px 2px calc(env(safe-area-inset-bottom, 20px) + 4px) 2px;
+    }
+    .capsule {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+    .capsule span { font-size: 11px; }
+    .capsule label { font-size: 7px; }
+}
+
+@media (max-height: 600px) {
+    .hud-layer {
+        padding-bottom: 5px;
+        gap: 3px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .hud-layer {
+        grid-template-columns: repeat(4, 1fr);
+        padding: 8px 4px calc(env(safe-area-inset-bottom, 20px) + 8px) 4px;
+        gap: 4px;
+    }
+    .capsule {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 768px) {
+    .hud-layer {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 15px 10px calc(env(safe-area-inset-bottom, 20px) + 15px) 10px;
+    }
+    .capsule {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    .capsule span { font-size: 16px; }
+    .capsule label { font-size: 10px; }
+}
+
+@media (min-width: 1024px) {
+    #game-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .hud-layer {
+        grid-template-columns: repeat(4, auto);
+        padding: 15px 10px calc(env(safe-area-inset-bottom, 20px) + 15px) 10px;
+    }
+    .capsule {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .hud-layer {
+        padding: 4px 3px 4px 3px;
+    }
+    .capsule {
+        padding: 4px 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-in { animation: none; opacity: 1; transform: none; }
+    .capsule { transition: none; }
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .hud-layer { padding-bottom: calc(env(safe-area-inset-bottom) + 15px); }
+    canvas { max-height: 90vh; }
+}
+
+@media (min-aspect-ratio: 1/1) {
+    #game-container { max-height: 100vh; max-width: 100vw; }
+}
 </style>
 </head>
 <body>
