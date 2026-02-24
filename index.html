@@ -1733,21 +1733,13 @@
     function showMainContent() {
         if (videoEnded) return;
         videoEnded = true;
-        
-        // Hide video and overlay
+        console.log('Video ended, showing game');  // Log para confirmar
         video.style.display = 'none';
         overlay.style.display = 'none';
-        
-        // Show main content
         mainContent.style.display = 'flex';
-mainContent.style.width = '100%';
-mainContent.style.height = '100%';
-
-        
-        // Dispatch resize event for responsive canvas
+        mainContent.style.width = '100%';
+        mainContent.style.height = '100%';
         window.dispatchEvent(new Event('resize'));
-        
-        // Initialize game after a short delay
         setTimeout(() => {
             if (window.gameInstance) {
                 window.gameInstance.handleResize();
@@ -1756,6 +1748,7 @@ mainContent.style.height = '100%';
     }
 
     video.muted = true;  // Force muted inicial
+
 const playPromise = video.play();
 if (playPromise !== undefined) {
     playPromise.then(() => {
@@ -1764,6 +1757,40 @@ if (playPromise !== undefined) {
         console.error('Autoplay error:', error);  // Log detallado
         overlay.style.display = 'flex';
     });
+}
+// En fallbackBtn:
+fallbackBtn.addEventListener('click', () => {
+    video.muted = false;
+    video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
+    overlay.style.display = 'none';
+});
+}
+
+fallbackBtn.addEventListener('click', () => {
+  video.muted = false;
+  video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
+  overlay.style.display = 'none';
+});
+    }
+
+    video.addEventListener('ended', () => {
+        console.log('Ended event fired');  // Log para ver si llega
+        showMainContent();
+    });
+    
+    video.addEventListener('error', (e) => console.error('Video error:', e));  // Log errors de video
+    
+    // Force show game después de 5s si no ends (fix si video roto)
+    setTimeout(showMainContent, 5000);
+    
+    video.addEventListener('click', showMainContent);
+    
+    fallbackBtn.addEventListener('click', () => {
+        video.muted = false;  // Activa sonido
+        video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
+        overlay.style.display = 'none';
+    });
+})();
 }
 
 // En fallbackBtn:
@@ -6057,16 +6084,9 @@ if (!simSnapped) this.model.grid = backupGrid;
     };
 </script>
 <script>
-    // FIX: Style bubble para Explicalia pre-message
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .explicalia-pre {
-            background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            padding: 12px 20px;
-        }
-    `;
-    document.head.appendChild(style);
+const style = document.createElement('style');
+style.innerHTML = '.explicalia-pre { background: rgba(0,0,0,0.4); border-radius: 20px; padding: 12px 20px; }';
+document.head.appendChild(style);
 </script>
 </div> <!-- Cierre de #main-content -->
 </body>
