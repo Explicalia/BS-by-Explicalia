@@ -55,7 +55,7 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
     z-index: 10001;
-    /* display: none; */  /* Comentado o eliminado */
+    display: flex;  /* Añadido para activar flexbox y centering */
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -1516,8 +1516,7 @@
         <div style="margin-top: 25px; font-size: 12px; color: var(--text-sub);">Toca para controles touch-perfectos</div>
     </div>
 </div>
-
-<!-- MAIN CONTENT WRAPPER -->
+!-- MAIN CONTENT WRAPPER -->
 <div id="main-content">
 <div id="game-container">
     <canvas id="gameCanvas"></canvas>
@@ -6038,5 +6037,58 @@ style.innerHTML = '.explicalia-pre { background: rgba(0,0,0,0.4); border-radius:
 document.head.appendChild(style);
 </script>
 </div> <!-- Cierre de #main-content -->
+<script>
+// === MANEJO DE INTRO VIDEO - FIJO Y ROBUSTO ===
+(function() {
+    const video = document.getElementById('intro-video');
+    const overlay = document.getElementById('intro-overlay');
+    const mainContent = document.getElementById('main-content');
+    const playBtn = document.getElementById('play-video-btn');
+    const skipBtn = document.getElementById('skip-video-btn');
+
+    function showMainContent() {
+        console.log('🔥 Mostrando juego...');
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        video.pause();
+        video.style.display = 'none';
+        mainContent.style.display = 'flex';
+        mainContent.style.opacity = '1';
+        // Fuerza resize para canvas/juego
+        window.dispatchEvent(new Event('resize'));
+        setTimeout(() => {
+            if (window.gameInstance?.handleResize) {
+                window.gameInstance.handleResize();
+            }
+            console.log('✅ Juego listo');
+        }, 100);
+    }
+
+    // Skip inmediato
+    skipBtn.addEventListener('click', showMainContent);
+
+    // Play con sonido
+    playBtn.addEventListener('click', () => {
+        video.currentTime = 0;
+        video.muted = false;
+        video.play().then(() => {
+            overlay.style.display = 'none';
+            video.style.display = 'block';
+            console.log('🎬 Video reproduciéndose...');
+        }).catch(err => {
+            console.warn('Vídeo falló (archivo? CORS?):', err);
+            showMainContent(); // Salta si no hay vídeo
+        });
+    });
+
+    // Fin vídeo → juego
+    video.addEventListener('ended', showMainContent);
+    video.addEventListener('click', showMainContent); // Skip tocando vídeo
+
+    // Timeout safety: 8s máx
+    setTimeout(showMainContent, 8000);
+})();
+</script>
 </body>
 </html>
+
