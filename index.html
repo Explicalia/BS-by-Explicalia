@@ -55,28 +55,10 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
     z-index: 10001;
-    display: none;
+    /* display: none; */  /* Comentado o eliminado */
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
-
-#fallback-btn {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: #1a1100;
-    border: none;
-    padding: 16px 32px;
-    border-radius: var(--ios-radius-medium);
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: var(--ios-shadow-strong);
-    transition: transform 0.1s;
-    font-family: var(--ios-font);
-}
-
-#fallback-btn:active {
-    transform: scale(0.98);
 }
 
 #main-content {
@@ -1518,15 +1500,21 @@
 </style>
 </head>
 <body>
-<!-- VIDEO INTRO -->
-<video id="intro-video" autoplay playsinline muted>
+<!-- VIDEO INTRO (oculto inicial) -->
+<video id="intro-video" playsinline style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none;">
     <source src="intro.video.mp4" type="video/mp4">
-    Tu navegador no soporta videos HTML5.
+    <!-- Fallback si no hay vídeo: salta directo -->
 </video>
 
-<!-- FALLBACK OVERLAY -->
+<!-- OVERLAY INTRO - SIEMPRE VISIBLE AL CARGA -->
 <div id="intro-overlay">
-    <button id="fallback-btn">Reproducir con sonido</button>
+    <div class="ios-card" style="max-width: 400px; text-align: center;">
+        <div class="brand-title">Bubble Shooter</div>
+        <div class="brand-sub">www.explicalia.com</div>
+        <button id="play-video-btn" class="round-button btn-glow-pulse" style="margin-bottom: 15px; font-size: 18px;">🎥 Reproducir Intro<br><small style="font-size: 12px; font-weight: 400;">(con sonido épico)</small></button>
+        <button id="skip-video-btn" class="btn-primary" style="font-size: 18px;">🚀 Saltar e Iniciar Juego</button>
+        <div style="margin-top: 25px; font-size: 12px; color: var(--text-sub);">Toca para controles touch-perfectos</div>
+    </div>
 </div>
 
 <!-- MAIN CONTENT WRAPPER -->
@@ -1723,94 +1711,55 @@
 
 <script>
 // VIDEO INTRO HANDLING
+// === MANEJO DE INTRO VIDEO - FIJO Y ROBUSTO ===
 (function() {
     const video = document.getElementById('intro-video');
     const overlay = document.getElementById('intro-overlay');
-    const fallbackBtn = document.getElementById('fallback-btn');
     const mainContent = document.getElementById('main-content');
-    let videoEnded = false;
+    const playBtn = document.getElementById('play-video-btn');
+    const skipBtn = document.getElementById('skip-video-btn');
 
     function showMainContent() {
-        if (videoEnded) return;
-        videoEnded = true;
-        console.log('Video ended, showing game');  // Log para confirmar
+        console.log('🔥 Mostrando juego...');
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        video.pause();
         video.style.display = 'none';
-        overlay.style.display = 'none';
         mainContent.style.display = 'flex';
-        mainContent.style.width = '100%';
-        mainContent.style.height = '100%';
+        mainContent.style.opacity = '1';
+        // Fuerza resize para canvas/juego
         window.dispatchEvent(new Event('resize'));
         setTimeout(() => {
-            if (window.gameInstance) {
+            if (window.gameInstance?.handleResize) {
                 window.gameInstance.handleResize();
             }
+            console.log('✅ Juego listo');
         }, 100);
     }
 
-    video.muted = true;  // Force muted inicial
+    // Skip inmediato
+    skipBtn.addEventListener('click', showMainContent);
 
-const playPromise = video.play();
-if (playPromise !== undefined) {
-    playPromise.then(() => {
-        console.log('Video playing OK');
-    }).catch(error => {
-        console.error('Autoplay error:', error);  // Log detallado
-        overlay.style.display = 'flex';
+    // Play con sonido
+    playBtn.addEventListener('click', () => {
+        video.currentTime = 0;
+        video.muted = false;
+        video.play().then(() => {
+            overlay.style.display = 'none';
+            video.style.display = 'block';
+            console.log('🎬 Video reproduciéndose...');
+        }).catch(err => {
+            console.warn('Vídeo falló (archivo? CORS?):', err);
+            showMainContent(); // Salta si no hay vídeo
+        });
     });
-}
-// En fallbackBtn:
-fallbackBtn.addEventListener('click', () => {
-    video.muted = false;
-    video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
-    overlay.style.display = 'none';
-});
-}
 
-fallbackBtn.addEventListener('click', () => {
-  video.muted = false;
-  video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
-  overlay.style.display = 'none';
-});
-    }
-
-    video.addEventListener('ended', () => {
-        console.log('Ended event fired');  // Log para ver si llega
-        showMainContent();
-    });
-    
-    video.addEventListener('error', (e) => console.error('Video error:', e));  // Log errors de video
-    
-    // Force show game después de 5s si no ends (fix si video roto)
-    setTimeout(showMainContent, 5000);
-    
-    video.addEventListener('click', showMainContent);
-    
-    fallbackBtn.addEventListener('click', () => {
-        video.muted = false;  // Activa sonido
-        video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
-        overlay.style.display = 'none';
-    });
-})();
-}
-
-// En fallbackBtn:
-fallbackBtn.addEventListener('click', () => {
-    video.muted = false;
-    video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
-    overlay.style.display = 'none';
-});
-
-    // Video ended event
+    // Fin vídeo → juego
     video.addEventListener('ended', showMainContent);
-    
-    // Click on video to skip
-    video.addEventListener('click', showMainContent);
-    
-    // Fallback button click
-    fallbackBtn.addEventListener('click', () => {
-        video.play();
-        overlay.style.display = 'none';
-    });
+    video.addEventListener('click', showMainContent); // Skip tocando vídeo
+
+    // Timeout safety: 8s máx
+    setTimeout(showMainContent, 8000);
 })();
 // === SISTEMA EXPLICALIA: núcleo de lógica + banco de frases ===
 const ExplicaliaSystem = (() => {
