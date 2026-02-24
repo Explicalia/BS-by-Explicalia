@@ -1519,7 +1519,7 @@
 </head>
 <body>
 <!-- VIDEO INTRO -->
-<video id="intro-video" autoplay playsinline>
+<video id="intro-video" autoplay playsinline muted>
     <source src="intro.video.mp4" type="video/mp4">
     Tu navegador no soporta videos HTML5.
 </video>
@@ -1755,16 +1755,23 @@ mainContent.style.height = '100%';
         }, 100);
     }
 
-    // Try autoplay with sound
-    const playPromise = video.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.catch(error => {
-            // Autoplay was prevented, show fallback button
-            console.log('Autoplay prevented:', error);
-            overlay.style.display = 'flex';
-        });
-    }
+    video.muted = true;  // Force muted inicial
+const playPromise = video.play();
+if (playPromise !== undefined) {
+    playPromise.then(() => {
+        console.log('Video playing OK');
+    }).catch(error => {
+        console.error('Autoplay error:', error);  // Log detallado
+        overlay.style.display = 'flex';
+    });
+}
+
+// En fallbackBtn:
+fallbackBtn.addEventListener('click', () => {
+    video.muted = false;
+    video.play().then(() => console.log('Fallback play OK')).catch(err => console.error('Fallback error:', err));
+    overlay.style.display = 'none';
+});
 
     // Video ended event
     video.addEventListener('ended', showMainContent);
@@ -3452,32 +3459,75 @@ window.UIController = (() => {
         /**
          * Inicializa nivel con restricción de NO 3 consecutivos
          */
-        initLevel(p) { 
-            this.resetEmpty();
-            const numColors = Math.min(p.colors, Config.COLORS.length);
-            const level = p.level || 1;
-            
-            // Ajuste progresivo entre niveles: menos rows/colores en bajos
-            p.rows = Math.max(4, Math.min(10, 4 + level)); // Menos a más
-            
-            // Generar con dificultad decreciente en partida: más clusters abajo
-            for (let r = 0; r < p.rows; r++) {
-                for (let c = 0; c < Config.GRID_COLS; c++) {
-                    if (r % 2 !== 0 && c === Config.GRID_COLS - 1) continue;
-                    const colorId = this.pickColorWithoutConsecutive(r, c, numColors);
-                    this.grid[r][c] = { color: Config.COLORS[colorId] };
-                }
-            }
-            
-            // Añadir más clusters en rows bajas (fácil fin partida)
-            const clusterBias = p.rows - Math.floor(p.rows * 0.4); // Bias a bottom
-            this.addProgressivePatternsSecure(p.rows, numColors, level, clusterBias);
-            
-            // Asegurar ganable
-            if (!this.isSolvableProgressive(numColors, level)) {
-                this.addGuaranteedClusters(p.rows, numColors);
+initLevel(p) { 
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    while (attempts < maxAttempts) {
+        this.resetEmpty();
+        const numColors = Math.min(p.colors, Config.COLORS.length);
+        const level = p.level || 1;
+        
+        // Generar con dificultad decreciente en partida: más clusters abajo
+        for (let r = 0; r < p.rows; r++) {
+            for (let c = 0; c < Config.GRID_COLS; c++) {
+                if (r % 2 !== 0 && c === Config.GRID_COLS - 1) continue;
+                const colorId = this.pickColorWithoutConsecutive(r, c, numColors);
+                this.grid[r][c] = { color: Config.COLORS[colorId] };
             }
         }
+        
+        // Añadir más clusters en rows bajas (fácil fin partida)
+        const clusterBias = p.rows - Math.floor(p.rows * 0.4); // Bias a bottom
+        this.addProgressivePatternsSecure(p.rows, numColors, level, clusterBias);
+        
+        // Asegurar ganable
+        if (!this.isSolvableProgressive(numColors, level)) {
+            this.addGuaranteedClusters(p.rows, numColors);
+        }
+        isFullySolvableApprox(numColors) {
+    // Simula clusters totales y cobertura
+    let totalBubbles = 0;
+    for (let r = 0; r < Config.GRID_ROWS; r++) {
+        for (let c = 0; c < Config.GRID_COLS; c++) {
+            if (this.getCell(r, c)) totalBubbles++;
+        }
+    }
+    
+    let matchable = 0;
+    let visited = new Set();
+    
+    for (let colorId = 0; colorId < numColors; colorId++) {
+        for (let r = 0; r < Config.GRID_ROWS; r++) {
+            for (let c = 0; c < Config.GRID_COLS; c++) {
+                let key = `${r},${c}`;
+                if (!visited.has(key) && this.getCell(r, c)?.color.id === colorId) {
+                    let group = this.findMatches(r, c, colorId);
+                    if (group.length >= 3) matchable += group.length;
+                    group.forEach(g => visited.add(`${g.r},${g.c}`));
+                }
+            }
+        }
+    }
+    
+    // Si >80% bubbles son matchables iniciales, asumimos solvable
+    return (matchable / totalBubbles) > 0.8;
+}
+        
+        // Nuevo: Check mejorado de solvabilidad
+        if (this.isFullySolvableApprox(numColors)) {
+            break;  // Grid bueno
+        }
+        
+        attempts++;
+    }
+    
+    if (attempts >= maxAttempts) {
+        console.warn('Max attempts reached; using last grid');
+    }
+    
+    this.setInitialBubbleCount();
+}
         
         /**
          * Añade patrones progresivos SIN crear 3 consecutivos
@@ -3735,29 +3785,39 @@ window.UIController = (() => {
             // Preferir colores de la zona de peligro
             let dangerValid = validColors.filter(c => dang.includes(c));
             
-            // Nueva ayuda sutil
-            const timeMs = this.game ? this.game.levelElapsedTime : 0;
-            const helpActive = timeMs > 600000 && timeMs < 900000;
-            if (helpActive && Math.random() < 0.9) { // 90% chance, sutil
-                if (dang.length > 0) {
-                    return Config.COLORS[dang[Math.floor(Math.random() * dang.length)]];
-                }
-            }
-            
-            // 2.1: Ajuste sutil basado en tiempo
-            const levelLimitMs = (Config.TIME_LIMITS[this.game.level] || 5) * 60 * 1000;
-            const timeRatio = timeMs / levelLimitMs;
-            if (timeRatio > 0.8 && Math.random() < timeRatio - 0.8) { // Prob creciente si cerca del límite
-                // Aumentar prob de color "fácil" (en danger zone)
-                if (dangerValid.length > 0) {
-                    return Config.COLORS[dangerValid[Math.floor(Math.random() * dangerValid.length)]];
-                }
-            }
+            // Ayuda progresiva basada en el tiempo real del nivel
+const timeMs = this.game ? this.game.levelElapsedTime : 0;
+const levelLimitMs = (Config.TIME_LIMITS[this.game ? this.game.level : 1] || 5) * 60 * 1000;
+const timeRatio = Math.min(timeMs / levelLimitMs, 1.0);
+
+// A partir del 50% del tiempo, la ayuda empieza a activarse
+// A partir del 75%, casi siempre da color útil
+if (timeRatio > 0.5 && dang.length > 0) {
+    const helpProbability = (timeRatio - 0.5) * 2; // 0 al 50%, 1.0 al 100%
+    if (Math.random() < helpProbability) {
+        return Config.COLORS[dang[Math.floor(Math.random() * dang.length)]];
+    }
+}
             
             if (all.length === 1) return Config.COLORS[all[0]];
             if (hCheck(maxR) && dangerValid.length > 0 && Math.random() < 0.7) {
-                return Config.COLORS[dangerValid[Math.floor(Math.random() * dangerValid.length)]];
-            }
+    return Config.COLORS[dangerValid[Math.floor(Math.random() * dangerValid.length)]];
+}
+
+// Nueva: Asistencia disimulada basada en level y tiempo
+const level = this.game ? this.game.level : 1;
+const startHelpMs = (3 + (level - 1)) * 60000;  // Min 3 +1 por level
+const timeMs = this.game ? this.game.levelElapsedTime : 0;
+
+if (timeMs > startHelpMs && dang.length > 0) {
+    const helpProbability = Math.min((timeMs - startHelpMs) / (5 * 60000), 1.0);  // Aumenta hasta 100% en +5 min
+    if (Math.random() < helpProbability) {
+        return Config.COLORS[dang[Math.floor(Math.random() * dang.length)]];
+    }
+}
+
+return Config.COLORS[validColors[Math.floor(Math.random() * validColors.length)]];
+}
             
             return Config.COLORS[validColors[Math.floor(Math.random() * validColors.length)]];
         }
@@ -5130,16 +5190,16 @@ window.UIController = (() => {
                     
                     if (this.mode === 'tutorial') {
                         p = { rows: 4, colors: 3, shots: 15, level: l };
-                        this.aiUsesLeft = 3;
-                        this.swapUses = 3;
+                        this.aiUsesLeft = 6;
+                        this.swapUses = 6;
                         this.attemptsLeft = 0;
                     } else if (this.mode === 'experto') {
                         this.attemptsLeft = 1;
                         p.rows = l === 1 ? 7 : l === 2 ? 8 : l === 3 ? 9 : 10;
                         p.colors = l === 1 ? 4 : l <= 3 ? 5 : l <= 5 ? 6 : 6;
                         p.shots = l === 1 ? 10 : l === 2 ? 9 : l === 3 ? 8 : l === 4 ? 7 : l === 5 ? 6 : l === 6 ? 5 : 4;
-                        this.aiUsesLeft = 3;
-                        this.swapUses = 3;
+                        this.aiUsesLeft = 6;
+                        this.swapUses = 6;
                     }
                     
                     p.shots = Math.max(3, p.shots);
@@ -5778,21 +5838,44 @@ window.UIController = (() => {
                             s.type = "Defensivo";
                         }
                     }
-                    // Mejora: Simular tiro futuro para potencial
-                    if (s.score < 100) {
-                        const backupGrid = this.model.cloneGrid();
-                        const snap = this.physics.snapToGrid(
-                            this.currentBubble.x + Math.cos(a) * this.physics.height,
-                            this.currentBubble.y + Math.sin(a) * this.physics.height
-                        );
-                        if (snap) {
-                            this.model.setCell(snap.r, snap.c, {color: this.currentBubble.color});
-                            let futureMatches = this.model.findMatches(snap.r, snap.c, this.currentBubble.color.id);
-                            s.futurePotential = futureMatches.length * 5;
-                            s.score += s.futurePotential;
-                            this.model.grid = backupGrid;
-                        }
-                    }
+                    // Simular el tiro completo y evaluar el tablero resultante real
+const backupGrid = this.model.cloneGrid();
+const simBullet = { x: this.currentBubble.x, y: this.currentBubble.y, angle: a, bounces: 0 };
+let simSteps = 0;
+let simSnapped = false;
+
+while (simSteps < 300) {
+    simSteps++;
+    if (this.physics.step(simBullet)) {
+        const snap = this.physics.snapToGrid(simBullet.x, simBullet.y);
+        if (snap) {
+            this.model.setCell(snap.r, snap.c, { color: this.currentBubble.color });
+            
+            // Contar matches directos
+            const directMatches = this.model.findMatches(snap.r, snap.c, this.currentBubble.color.id);
+            
+            // Contar burbujas flotantes que caerían
+            let floatingCount = 0;
+            if (directMatches.length >= 3) {
+                directMatches.forEach(x => this.model.setCell(x.r, x.c, null));
+                const floating = this.model.getFloatingBubbles();
+                floatingCount = floating.length;
+                // Restaurar para no mutar el modelo
+            }
+            
+            // Score real: matches + caídas en cadena
+            s.score = directMatches.length >= 3
+                ? directMatches.length * 15 + floatingCount * 8
+                : 0;
+            
+            simSnapped = true;
+        }
+        this.model.grid = backupGrid;
+        break;
+    }
+}
+if (!simSnapped) this.model.grid = backupGrid;
+
                     op.push(s);
                 }
                 steps++; 
