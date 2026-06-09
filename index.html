@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Juega a Bubble Shooter gratis en Explicalia. Juego de estrategia cognitiva y lógica sin descargas.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Bubble Shooter - www.explicalia.com</title>
+    <title>Bubble Shooter - El recreo de los mayores</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
 
@@ -44,35 +44,55 @@
     body {
         margin: 0;
         padding: 0;
-        background-color: var(--bg);
-        background-image: radial-gradient(circle at 50% 0%, #3a2a00 0%, #101010 80%);
+        background-color: #050505;
+        background-image: radial-gradient(circle at center, #1a1a25 0%, #000 100%);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
         overflow: hidden;
-        touch-action: none;
-        user-select: none;
+        touch-action: none; 
         -webkit-user-select: none;
-        font-family: var(--ios-font);
-        color: var(--text-main);
-        height: 100%;
-        width: 100%;
+        user-select: none;
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 100%;
+        height: 100%;
     }
 
     #game-container {
         position: relative;
         width: 100%;
-        height: 100%;
-        max-width: 600px;
-        background: transparent;
-        box-shadow: 0 0 60px rgba(0,0,0,0.6);
+        height: 100dvh;
+        max-width: min(600px, calc(100dvh * (9 / 16)));
+        margin: auto;
+        background: radial-gradient(circle at bottom, #2a2a35 0%, #111 80%);
+        box-shadow: 0 0 60px rgba(0,0,0,0.8);
+        border-radius: 0px;
+        overflow: hidden;
     }
 
-    canvas {
+    @media (min-width: 600px) and (min-height: 800px) {
+        #game-container {
+            border-radius: 20px;
+        }
+    }
+
+    #gameCanvas {
         display: block;
         width: 100%;
         height: 100%;
-        cursor: crosshair;
+        touch-action: none;
+    }
+    
+    @keyframes epicShake {
+        0% { transform: translateY(0); }
+        25% { transform: translateY(2px); }
+        50% { transform: translateY(-1px); }
+        75% { transform: translateY(1px); }
+        100% { transform: translateY(0); }
+    }
+    .shake-epic {
+        animation: epicShake 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     }
 
     #flash-overlay {
@@ -94,6 +114,7 @@
         bottom: 0;
         left: 0;
         width: 100%;
+        box-sizing: border-box;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 5px;
@@ -130,6 +151,60 @@
         background: rgba(60, 50, 30, 0.7);
     }
 
+    .ios-list-group {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    .ios-list-item {
+        background: transparent;
+        border: none;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .ios-list-item:last-child { border-bottom: none; }
+    .ios-list-item:active { background: rgba(255, 255, 255, 0.15); }
+    .text-red { color: #ff3b30 !important; }
+
+    .glass-overlay {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
+        z-index: 100;
+        display: flex; flex-direction: column; justify-content: flex-end;
+        opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .glass-overlay.visible { opacity: 1; pointer-events: auto; }
+    .bottom-sheet {
+        background: rgba(28, 28, 30, 0.85);
+        backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        border-top: 0.5px solid rgba(255,255,255,0.1);
+        border-radius: 24px 24px 0 0;
+        padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom, 20px));
+        transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex; flex-direction: column; gap: 15px;
+    }
+    .glass-overlay.visible .bottom-sheet { transform: translateY(0); }
+    .sheet-handle { width: 40px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 3px; margin: 0 auto 10px auto; }
+    
+    .bot-setting { display: flex; flex-direction: column; gap: 8px; }
+    .bot-setting label { font-size: 13px; font-weight: 600; color: var(--gold-light); }
+    .ios-select { 
+        background: rgba(255,255,255,0.1); border: none; color: white; padding: 12px; border-radius: 12px; font-size: 16px; outline: none; appearance: none;
+    }
+    .segmented-control { display: flex; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 3px; }
+    .seg-btn { flex: 1; background: transparent; border: none; color: white; padding: 10px; border-radius: 10px; font-size: 18px; transition: background 0.2s; }
+    .seg-btn.active { background: rgba(255,255,255,0.2); }
+
     .capsule label {
         font-size: 10px;
         color: var(--gold-light);
@@ -161,38 +236,47 @@
 
     #ai-panel {
         position: absolute;
-        bottom: 130px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        width: 90%;
-        max-width: 360px;
-        background: var(--card);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        border: 0.5px solid var(--border);
-        border-radius: 24px;
-        padding: var(--ios-spacing-l);
+        bottom: 110px; /* Above Menu button */
+        right: 15px;
+        width: 190px;
+        background: rgba(250, 250, 250, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: none;
+        border-radius: 18px;
+        border-bottom-right-radius: 4px; /* Speech bubble tail effect */
+        padding: 10px 14px;
         z-index: 20;
         opacity: 0;
         pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        box-shadow: var(--ios-shadow-strong);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        transform: translateY(10px) scale(0.95);
+        transform-origin: bottom right;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 4px;
+    }
+    .darkMode #ai-panel {
+        background: rgba(30, 30, 32, 0.95);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
 
     #ai-panel.visible {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
-        pointer-events: auto;
+        transform: translateY(0) scale(1);
     }
 
     .ai-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 5px;
+        display: none; /* Make it just a clean message bubble */
+    }
+
+    #ai-content {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-main);
+        line-height: 1.3;
+        text-align: right;
     }
 
     .ai-label {
@@ -222,27 +306,30 @@
         gap: 10px;
     }
 
-    .btn-manual {
-        background: rgba(255,255,255,0.1);
+    .btn-manual, .btn-auto {
         border: none;
-        border-radius: var(--ios-radius-medium);
-        color: var(--text-main);
+        border-radius: 9999px;
         font-weight: 600;
-        padding: 12px;
+        padding: 14px 20px;
         font-size: 14px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s ease, opacity 0.15s;
     }
+
+    .btn-manual {
+        background: rgba(255,255,255,0.1);
+        color: var(--text-main);
+    }
+    .btn-manual:active { transform: scale(0.96); opacity: 0.8; }
 
     .btn-auto {
         background: var(--green);
-        border: none;
-        border-radius: var(--ios-radius-medium);
         color: black;
-        font-weight: 700;
-        padding: 12px;
-        font-size: 14px;
-        cursor: pointer;
     }
+    .btn-auto:active { transform: scale(0.96); opacity: 0.8; }
 
     #overlay {
         position: fixed;
@@ -282,7 +369,8 @@
         box-shadow: var(--ios-shadow-strong);
         margin: 0 auto;
         position: relative;
-        overflow: hidden;
+        max-height: 90vh;
+        overflow-y: auto;
         box-sizing: border-box;
     }
 
@@ -348,19 +436,24 @@
         background: linear-gradient(135deg, var(--gold), var(--gold-dark));
         color: #1a1100;
         border: 1px solid rgba(255,255,255,0.2);
-        padding: 16px;
+        padding: 16px 20px;
         width: 100%;
-        border-radius: var(--ios-radius-medium);
+        border-radius: 9999px;
         font-size: 16px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         margin-top: 10px;
-        transition: transform 0.1s;
         box-shadow: var(--ios-shadow);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s;
     }
 
     .btn-primary:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
         opacity: 0.9;
     }
 
@@ -379,19 +472,24 @@
         background: linear-gradient(135deg, var(--gold), var(--gold-dark));
         color: #1a1100;
         border: 1px solid rgba(255,255,255,0.2);
-        padding: 16px;
+        padding: 16px 20px;
         width: 100%;
-        border-radius: 50px;
+        border-radius: 9999px;
         font-size: 16px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         margin-top: 10px;
-        transition: transform 0.1s, opacity 0.3s;
         box-shadow: var(--ios-shadow);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s;
     }
 
     .round-button:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
         opacity: 0.9;
     }
     #manualFireBtn {
@@ -681,7 +779,7 @@
     }
 
     .summary-score-val {
-        font-size: 56px;
+        font-size: clamp(32px, 8vw, 56px);
         font-weight: 800;
         color: var(--text-main);
         line-height: 1;
@@ -689,6 +787,8 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 5px;
+        word-break: keep-all;
+        white-space: nowrap;
     }
 
     .stats-section {
@@ -828,11 +928,19 @@
         background: var(--green);
         color: black;
         border: none;
-        padding: 12px 24px;
-        border-radius: var(--ios-radius-medium);
+        padding: 16px 20px;
+        border-radius: 9999px;
         cursor: pointer;
-        font-weight: 700;
+        font-weight: 600;
+        font-size: 16px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s ease;
     }
+    .close-tutorial:active { transform: scale(0.96); }
 
     #pause-overlay {
         position: fixed;
@@ -860,17 +968,31 @@
         background: rgba(255,255,255,0.1);
         color: var(--text-main);
         border: none;
-        padding: 16px;
+        padding: 16px 20px;
         width: 100%;
-        border-radius: var(--ios-radius-medium);
+        border-radius: 9999px;
         cursor: pointer;
         font-weight: 600;
+        font-size: 16px;
         margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-sizing: border-box;
+        transition: transform 0.15s ease, background 0.2s;
+    }
+    .pause-btn:active {
+        transform: scale(0.96);
+        background: rgba(255,255,255,0.15);
     }
 
     .pause-btn.primary {
         background: linear-gradient(135deg, var(--gold), var(--gold-dark));
         color: #1a1100;
+    }
+    .pause-btn.primary:active {
+        background: linear-gradient(135deg, var(--gold-dark), var(--gold));
     }
 
     .streak-info {
@@ -880,7 +1002,7 @@
         text-align: center;
     }
 
-    #settings-overlay {
+    #settings-overlay, #bot-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -898,7 +1020,7 @@
         transition: opacity 0.3s;
     }
 
-    #settings-overlay.visible {
+    #settings-overlay.visible, #bot-overlay.visible {
         display: flex;
     }
 
@@ -958,7 +1080,8 @@
     }
 
     .ios-segment {
-        padding: 6px 12px;
+        flex: 1;
+        padding: 8px 4px;
         font-size: 13px;
         font-weight: 500;
         color: var(--text-main);
@@ -967,8 +1090,10 @@
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
-        min-width: 44px;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .ios-segment.active {
@@ -1014,25 +1139,53 @@
 
     #level-message {
         position: absolute;
-        font-size: 12px;
-        color: var(--text-main);
         font-family: var(--ios-font);
-        text-align: center;
         z-index: 11;
         opacity: 0;
         transition: opacity 0.4s ease-out;
+        background: rgba(30, 30, 30, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 6px 14px;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
     }
 
     #menu-message {
         position: absolute;
-        font-size: 12px;
-        color: var(--text-main);
         font-family: var(--ios-font);
-        text-align: center;
         z-index: 11;
-        cursor: pointer;
         opacity: 0;
-        transition: opacity 0.4s ease-out;
+        transition: opacity 0.4s ease-out, transform 0.1s;
+        background: rgba(30, 30, 30, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 6px 14px;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    #menu-message:active {
+        background: rgba(60, 60, 60, 0.7);
+        transform: scale(0.95);
     }
 
     #welcome-message {
@@ -1050,20 +1203,28 @@
 
     #timer {
         position: absolute;
-        font-size: 12px;
-        color: var(--gold);
         font-family: var(--ios-font);
-        font-weight: 600;
-        background: rgba(0,0,0,0.4);
-        border: 1px solid var(--border);
-        border-radius: var(--ios-radius-medium);
-        padding: 4px 8px;
         z-index: 11;
-        display: none;
-        transform: translateX(-50%);
-        left: 50%;
         opacity: 0;
         transition: opacity 0.4s ease-out;
+        background: rgba(30, 30, 30, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 6px 14px;
+        color: var(--gold-light);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        font-variant-numeric: tabular-nums;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transform: translateX(-50%);
+        left: 50%;
+        pointer-events: none;
     }
 
     #screen-closure {
@@ -1082,39 +1243,46 @@
         background: var(--green);
         color: black;
         border: none;
-        padding: 16px;
+        padding: 16px 20px;
         width: 100%;
-        border-radius: var(--ios-radius-medium);
+        border-radius: 9999px;
         font-size: 16px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         margin-top: 10px;
-        transition: transform 0.1s;
         box-shadow: var(--ios-shadow);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s;
     }
-
     .continue-btn:active {
-        transform: scale(0.98);
-        opacity: 0.9;
+        transform: scale(0.96);
     }
 
     .btn-danger {
         background: transparent;
         color: var(--red);
         border: 1px solid var(--red);
-        padding: 14px;
+        padding: 16px 20px;
         width: 100%;
-        border-radius: var(--ios-radius-medium);
-        font-size: 14px;
+        border-radius: 9999px;
+        font-size: 16px;
         font-weight: 600;
         cursor: pointer;
         margin-top: 15px;
-        transition: all 0.2s;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
     }
 
     .btn-danger:active {
-        background: var(--red);
-        color: white;
+        background: rgba(255, 69, 58, 0.15);
+        transform: scale(0.96);
     }
 
     @keyframes ios-pulse-glow {
@@ -1249,10 +1417,6 @@
     }
 
     @media (min-width: 1024px) {
-        #game-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
         .hud-layer {
             grid-template-columns: repeat(4, auto);
             padding: 15px 10px calc(env(safe-area-inset-bottom, 20px) + 15px) 10px;
@@ -1279,10 +1443,8 @@
 
     @media (max-aspect-ratio: 1/1) {  /* Portrait */
         .hud-layer { padding-bottom: calc(env(safe-area-inset-bottom) + 15px); }
-        canvas { max-height: 90vh; }  /* Prevent overflow */
     }
     @media (min-aspect-ratio: 1/1) {  /* Landscape */
-        #game-container { max-height: 100vh; max-width: 100vw; }
     }
 
     #tutorial-overlay .ios-card {
@@ -1346,6 +1508,88 @@
         transition: none; /* No anim, permanente */
         opacity: 1;
     }
+    .explicalia-pre {
+        border-radius: 20px; 
+        background: rgba(255,255,255,0.1); 
+        padding: 12px 20px; 
+    }
+    .explicalia-logo {
+        --logo-width: 280px;
+        --sweep-duration: 2.2s;
+        --sweep-easing: cubic-bezier(0.25, 0.1, 0.25, 1);
+        --gold: rgba(200, 180, 120, 1);
+        --gold-glow: rgba(200, 180, 120, 0.15);
+        position: relative;
+        width: var(--logo-width);
+        max-width: 90vw;
+        aspect-ratio: 900 / 400;
+        overflow: hidden;
+        background: transparent;
+        margin: 0 auto 20px auto;
+    }
+    .explicalia-logo__img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: contain; 
+        object-position: center top;
+        clip-path: inset(0 0 25% 0); /* Oculta el eslogan incrustado en la imagen */
+    }
+    .explicalia-logo__reveal { position: absolute; inset: 0; clip-path: inset(0 100% 0 0); animation: explicalia-reveal var(--sweep-duration) var(--sweep-easing) forwards; }
+    .explicalia-logo__sweep-line { position: absolute; top: 0; left: -4px; width: 3px; height: 100%; background: linear-gradient(to bottom, transparent 0%, rgba(200, 180, 120, 0.3) 20%, rgba(255, 255, 255, 0.9) 48%, rgba(255, 255, 255, 1.0) 50%, rgba(255, 255, 255, 0.9) 52%, rgba(200, 180, 120, 0.3) 80%, transparent 100%); filter: blur(0.5px); z-index: 2; animation: explicalia-sweep var(--sweep-duration) var(--sweep-easing) forwards; }
+    .explicalia-logo__sweep-glow { position: absolute; top: 0; left: -20px; width: 40px; height: 100%; background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%); z-index: 1; animation: explicalia-sweep var(--sweep-duration) var(--sweep-easing) forwards; }
+    .explicalia-logo__sparkle { position: absolute; width: 3px; height: 3px; background: var(--gold); border-radius: 50%; opacity: 0; z-index: 3; box-shadow: 0 0 4px 1px rgba(200, 180, 120, 0.6); }
+    .explicalia-logo__sparkle:nth-child(1) { top: 10%; left: 15%; animation: explicalia-sparkle 0.6s 0.8s ease-out forwards; }
+    .explicalia-logo__sparkle:nth-child(2) { top: 30%; left: 35%; animation: explicalia-sparkle 0.5s 1.0s ease-out forwards; }
+    .explicalia-logo__sparkle:nth-child(3) { top: 55%; left: 55%; animation: explicalia-sparkle 0.7s 0.6s ease-out forwards; }
+    .explicalia-logo__sparkle:nth-child(4) { top: 75%; left: 70%; animation: explicalia-sparkle 0.5s 1.4s ease-out forwards; }
+    .explicalia-logo__sparkle:nth-child(5) { top: 20%; left: 85%; animation: explicalia-sparkle 0.6s 1.8s ease-out forwards; }
+    .explicalia-logo__sparkle:nth-child(6) { top: 85%; left: 45%; animation: explicalia-sparkle 0.5s 1.2s ease-out forwards; }
+    @keyframes explicalia-reveal { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0% 0 0); } }
+    @keyframes explicalia-sweep { 0% { transform: translateX(0); } 100% { transform: translateX(calc(var(--logo-width) + 10px)); } }
+    @keyframes explicalia-sparkle { 0% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.5); } 100% { opacity: 0; transform: scale(0); } }
+    @media (max-width: 540px) { @keyframes explicalia-sweep { 0% { transform: translateX(0); } 100% { transform: translateX(90vw); } } }
+
+    #intro-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        opacity: 0.6;
+    }
+        /* ========================================================================= */
+        /* STATS DASHBOARD                                                           */
+        /* ========================================================================= */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .stat-label {
+            font-size: 9px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        #stat-efficiency { color: var(--ios-blue); }
+        #stat-ratio { color: var(--gold); }
+        #stat-precision { color: var(--ios-green); }
 </style>
 </head>
 <body>
@@ -1375,7 +1619,7 @@
             <span id="aiCount">3</span>
         </div>
         <div class="capsule">
-            <label>Más difícil en</label>
+            <label>Burbujas</label>
             <span id="shotsEl">8</span>
         </div>
         <div class="capsule" id="swapCapsule">
@@ -1387,15 +1631,35 @@
         </div>
     </div>
 
-    <div id="level-message">Nivel <span id="levelEl">1</span></div>
+    <div id="level-message"><span id="levelEl">1</span></div>
     <div id="menu-message">Menú</div>
     <div id="timer">00:00:000</div>
 
     <div id="overlay">
+        <!-- VIDEO DE FONDO -->
+        <video autoplay loop muted playsinline id="intro-video">
+            <source src="intro.video.mp4" type="video/mp4">
+        </video>
+        
         <!-- PANTALLA DE INICIO -->
-        <div id="screen-start" class="ios-card">
-            <div class="brand-title">Bubble Shooter</div>
-            <div class="brand-sub">www.explicalia.com</div>
+        <div id="screen-start" class="ios-card" style="background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(10px);">
+            <!-- LOGO ANIMADO -->
+            <div class="explicalia-logo" id="explicalia-logo">
+                <span class="explicalia-logo__sparkle"></span>
+                <span class="explicalia-logo__sparkle"></span>
+                <span class="explicalia-logo__sparkle"></span>
+                <span class="explicalia-logo__sparkle"></span>
+                <span class="explicalia-logo__sparkle"></span>
+                <span class="explicalia-logo__sparkle"></span>
+                <div class="explicalia-logo__reveal">
+                    <img class="explicalia-logo__img" src="logo_explicalia_transparent.png" alt="Explicalia — El recreo de los mayores">
+                </div>
+                <div class="explicalia-logo__sweep-line"></div>
+                <div class="explicalia-logo__sweep-glow"></div>
+            </div>
+            
+            <div class="brand-title" style="display:none;">Bubble Shooter</div>
+            <div class="brand-sub" style="margin-top:-15px;">El recreo de los mayores</div>
             <div class="round-button" id="accessBtn">ACCESO AL JUEGO</div>
             
             <div id="start-main" style="width:100%; display:none;">
@@ -1408,8 +1672,8 @@
                     <button id="resetUserBtn" class="btn-text display-none" style="font-size:11px; margin-top:0px; color:var(--text-sub); opacity:0.8; padding:5px;">Cambiar Jugador</button>
                 </div>
                 <div class="intel-grid">
-                    <button id="expertBtn" class="round-button btn-glow-pulse">Comenzar Juego</button>
-                    <button id="campaignBtn" class="round-button">Juego de Aprendizaje</button>
+                    <button id="resumeSavedGameBtn" class="round-button btn-glow-pulse display-none" style="background: var(--ios-green); color: white; grid-column: span 2;">Continuar Partida Guardada</button>
+                    <button id="expertBtn" class="round-button btn-glow-pulse" style="grid-column: span 2;">Comenzar Juego</button>
                 </div>
             </div>
             
@@ -1430,12 +1694,26 @@
                     <div class="summary-score-val" id="sum-score">Nivel 0</div>
                 </div>
                 
-                <div class="stats-section">
-                    <div class="stats-section-title">Informe</div>
-                    <div id="informe-content"></div>
+                <div class="stats-dashboard">
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-efficiency">0%</div>
+                        <div class="stat-label">Tiros con Rebote</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-ratio">0</div>
+                        <div class="stat-label">Burbujas / Tiro</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-precision">0%</div>
+                        <div class="stat-label">Precisión</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-time">0ms</div>
+                        <div class="stat-label">T. Decisión</div>
+                    </div>
                 </div>
                 
-                <div class="quote-container">
+                <div class="quote-container" style="margin-top: 15px;">
                     <div class="quote-sarcasm" id="sum-sarcasm"></div>
                     <div class="quote-divider"></div>
                     <div class="quote-motivation" id="sum-motivation"></div>
@@ -1445,14 +1723,15 @@
                 <div id="medals-container"></div>
                 
                 <button id="continueBtn" class="continue-btn display-none">Continuar (Otra oportunidad)</button>
-                <button id="nextBtnStep1" class="btn-text" style="font-size:10px; padding:4px 8px; border-radius:10px; background:var(--border); opacity:0.8; margin-top:10px;">siguiente</button>
+                <button id="nextBtnStep1" class="btn-primary" style="margin-top: 15px;">Siguiente Paso</button>
             </div>
         </div>
 
         <!-- PANTALLA DE RESUMEN PASO 2 -->
         <div id="screen-summary-step2" class="display-none">
             <div class="ios-card">
-                <div class="brand-title" style="font-size:20px; margin-bottom:10px;">BUBBLE SHOOTER - www.explicalia.com</div>
+                <div class="brand-title" style="font-size:28px; margin-bottom:5px;">Bubble Shooter</div>
+                <div class="brand-sub" style="margin-bottom:20px;">El recreo de los mayores</div>
                 <div class="quote-container" style="margin-bottom: 30px;">
                     <div id="motivational-phrase" style="font-size: 16px; color: var(--text-main); line-height: 1.6; font-weight: 500;"></div>
                 </div>
@@ -1467,7 +1746,7 @@
             <div class="ios-card">
                 <div class="closure-message">Aquí estaré cuando vuelvas, listo para otro masaje mental. Peace and love.</div>
                 <div class="brand-title">Bubble Shooter</div>
-                <div class="brand-sub">www.explicalia.com</div>
+                <div class="brand-sub">El recreo de los mayores</div>
                 <div class="tutorial-signature">by Explicalia System</div>
                 <button id="returnToMenuBtn" class="btn-primary" style="margin-top: 20px;">Volver al Menú</button>
                 <button id="resetGameBtn" class="btn-danger">Reiniciar desde cero</button>
@@ -1479,7 +1758,7 @@
     <div id="tutorial-overlay">
         <div class="ios-card" style="max-width: 90%;">
             <div id="tutorial-text"></div>
-            <div class="tutorial-signature">by www.explicalia.com</div>
+            <div class="tutorial-signature">by Explicalia</div>
             <button class="close-tutorial" id="closeTutorialBtn">Entendido</button>
         </div>
     </div>
@@ -1487,13 +1766,51 @@
     <!-- OVERLAY DE PAUSA -->
     <div id="pause-overlay">
         <div class="ios-card">
-            <div class="section-title">Menú</div>
+            <div class="section-title">PAUSA</div>
             <div class="streak-info" id="streakInfo">Burbujas explotadas: 0</div>
             <div class="streak-info" id="bubbleInfo" style="font-size: 13px; color: var(--gold-light); font-weight: 600;">Restantes: 0 | Desafío Explicalia: 0</div>
-            <button class="pause-btn primary" id="resumePauseBtn">Reanudar partida</button>
-            <button class="pause-btn" id="restartPauseBtn">Reiniciar Nivel</button>
-            <button class="pause-btn" id="settingsBtn">⚙️ Ajustes</button>
-            <button class="pause-btn" id="exitPauseBtn">Salir al Menú</button>
+            
+            <button class="pause-btn primary" id="resumePauseBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Reanudar Partida
+            </button>
+            <button class="pause-btn" id="autoBotBtn" style="background: var(--ios-blue); color: white;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2zm0 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>
+                Asistente Bot
+            </button>
+            <button class="pause-btn" id="settingsBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Ajustes
+            </button>
+            <button class="pause-btn" id="restartPauseBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/></svg>
+                Reiniciar Nivel
+            </button>
+            <button class="pause-btn" id="exitPauseBtn" style="color: #ff453a;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Abandonar Partida
+            </button>
+            
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 0.5px solid rgba(255,255,255,0.1);">
+                <div class="setting-item" style="margin-bottom: 10px;">
+                    <div class="setting-info">
+                        <div class="setting-label" style="font-size: 14px;">Modo Oscuro Absoluto</div>
+                    </div>
+                    <div class="ios-toggle" id="toggle-dark-mode" data-setting="darkMode"></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label" style="font-size: 14px;">Indicador de Trayectoria</div>
+                    </div>
+                    <div class="ios-toggle active" id="toggle-trajectory" data-setting="showTrajectory"></div>
+                </div>
+                <div class="setting-item" style="margin-bottom: 10px;">
+                    <div class="setting-info">
+                        <div class="setting-label" style="font-size: 14px;">Vibración Háptica</div>
+                    </div>
+                    <div class="ios-toggle active" id="toggle-haptics" data-setting="haptics"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1505,36 +1822,77 @@
             <div class="settings-list">
                 <div class="setting-item">
                     <div class="setting-info">
-                        <div class="setting-label">Velocidad de Bala</div>
+                        <div class="setting-label">Vibración Háptica</div>
+                        <div class="setting-desc">Respuestas táctiles al jugar</div>
                     </div>
-                    <div class="ios-segmented-control">
-                        <button class="ios-segment setting-btn" data-setting="bulletSpeed" data-value="16">Lenta</button>
-                        <button class="ios-segment setting-btn" data-setting="bulletSpeed" data-value="32">Normal</button>
-                        <button class="ios-segment setting-btn active" data-setting="bulletSpeed" data-value="52">Rápida</button>
-                    </div>
+                    <div class="ios-toggle active" id="toggle-haptics-settings" data-setting="haptics"></div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-info">
-                        <div class="setting-label">Efectos Visuales</div>
-                        <div class="setting-desc">Partículas y animaciones</div>
+                        <div class="setting-label">Modo Daltónico</div>
+                        <div class="setting-desc">Iconos sobre las burbujas</div>
                     </div>
-                    <div class="ios-toggle active" id="toggle-visualEffects" data-setting="visualEffects"></div>
+                    <div class="ios-toggle" id="toggle-colorblind" data-setting="colorblind"></div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-info">
-                        <div class="setting-label">Tamaño de Burbujas</div>
+                        <div class="setting-label">Sacudida Épica</div>
+                        <div class="setting-desc">Temblor de pantalla en combos</div>
                     </div>
-                    <div class="ios-segmented-control">
-                        <button class="ios-segment setting-btn" data-setting="bubbleSize" data-value="0.85">S</button>
-                        <button class="ios-segment setting-btn" data-setting="bubbleSize" data-value="1.0">M</button>
-                        <button class="ios-segment setting-btn active" data-setting="bubbleSize" data-value="1.15">L</button>
-                    </div>
+                    <div class="ios-toggle active" id="toggle-screenshake" data-setting="screenshake"></div>
                 </div>
             </div>
 
             <button class="btn-primary" id="closeSettingsBtn">Guardar y Cerrar</button>
+        </div>
+    </div>
+    
+    <!-- OVERLAY DEL BOT -->
+    <div id="bot-overlay">
+        <div class="ios-card">
+            <div class="section-title" style="text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z"/></svg>
+                Asistente Bot
+            </div>
+            
+            <div class="settings-list" style="background: transparent;">
+                <div class="setting-item" style="border-bottom: 0.5px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
+                    <div class="setting-info">
+                        <div class="setting-label">Estado del Asistente</div>
+                    </div>
+                    <div class="ios-toggle" id="botMasterToggle"></div>
+                </div>
+                
+                <div id="botSettingsArea" style="opacity: 0.5; pointer-events: none; transition: opacity 0.3s;">
+                    <div class="setting-item" style="flex-direction: column; align-items: flex-start; margin-bottom: 20px;">
+                        <div class="setting-info" style="margin-bottom: 10px;">
+                            <div class="setting-label" style="color: var(--text-sub); font-size: 13px;">MODO DE ASISTENCIA</div>
+                        </div>
+                        <div class="ios-segmented-control" style="width: 100%;">
+                            <button class="ios-segment setting-btn active" id="botModeShared">Manual + IA</button>
+                            <button class="ios-segment setting-btn" id="botModeFull">Piloto Automático</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" style="flex-direction: column; align-items: flex-start;">
+                        <div class="setting-info" style="margin-bottom: 10px;">
+                            <div class="setting-label" style="color: var(--text-sub); font-size: 13px;">PERFIL DE JUGADOR</div>
+                        </div>
+                        <div class="ios-segmented-control" id="botSpeedSeg" style="width: 100%;">
+                            <button class="ios-segment setting-btn active" data-val="1200" data-perfect="false">Humano</button>
+                            <button class="ios-segment setting-btn" data-val="800" data-perfect="true">Bot Pro</button>
+                            <button class="ios-segment setting-btn" data-val="10" data-perfect="true">IA Máquina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="closeBotBtn" style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Guardar y Volver
+            </button>
         </div>
     </div>
 </div>
@@ -1557,91 +1915,91 @@ const ExplicaliaSystem = (() => {
     }
   }
 
-  // Banco de frases
-  const QUOTES = [
-    // PRE PARTIDA
-    {
-      id: "pre_new_player_start",
-      context: "pre",
-      tone: "sardonic",
-      condition: "playerIsNew && totalGames == 0",
-      text: "Sistema Explicalia:\nNadie acierta el primer disparo que importa."
-    },
-    {
-      id: "pre_many_games",
-      context: "pre",
-      tone: "sardonic",
-      condition: "totalGames >= 20",
-      text: "Sistema Explicalia:\nSi sigues viniendo es que el tablero aún gana algunas."
-    },
-    {
-      id: "pre_many_retries",
-      context: "pre",
-      tone: "sardonic",
-      condition: "retriesOnCurrentLevel >= 3",
-      text: "Sistema Explicalia:\nHay niveles que se superan.\nY niveles que se estudian."
-    },
+    // Banco de frases
+    const QUOTES = [
+        // PRE PARTIDA
+        {
+            id: "pre_new_player_start",
+            context: "pre",
+            tone: "sardonic",
+            condition: "playerIsNew && totalGames == 0",
+            text: "Nadie acierta el primer disparo que importa."
+        },
+        {
+            id: "pre_many_games",
+            context: "pre",
+            tone: "sardonic",
+            condition: "totalGames >= 20",
+            text: "Si sigues viniendo es que el tablero aún gana algunas."
+        },
+        {
+            id: "pre_many_retries",
+            context: "pre",
+            tone: "sardonic",
+            condition: "retriesOnCurrentLevel >= 3",
+            text: "Hay niveles que se superan. Y niveles que se estudian."
+        },
 
-    // EN PARTIDA
-    {
-      id: "mid_big_cascade",
-      context: "in_game",
-      tone: "tactical",
-      condition: "fallenByDisconnectionThisShot >= 10",
-      text: "Sistema Explicalia:\nEso no ha sido suerte.\nHa sido secuencia."
-    },
-    {
-      id: "mid_many_shots_no_cascade",
-      context: "in_game",
-      tone: "sardonic",
-      condition: "shotsSinceLastCascade >= 3 && boardNotImproving",
-      text: "Sistema Explicalia:\nTres disparos sin derribo.\nEnsayo prolongado."
-    },
-    {
-      id: "mid_wasted_bounce",
-      context: "in_game",
-      tone: "sardonic",
-      condition: "isBounceShot && !createdCluster && !improvedBoard",
-      text: "Sistema Explicalia:\nEl ángulo era válido.\nLa jugada, no tanto."
-    },
-    {
-      id: "mid_board_near_death",
-      context: "in_game",
-      tone: "tactical",
-      condition: "nearDeathState == true",
-      text: "Sistema Explicalia:\nCuando todo sube, solo sirve un disparo que haga caer."
-    },
+        // EN PARTIDA
+        {
+            id: "mid_big_cascade",
+            context: "in_game",
+            tone: "tactical",
+            condition: "fallenByDisconnectionThisShot >= 10",
+            text: "Eso no ha sido suerte. Ha sido secuencia."
+        },
+        {
+            id: "mid_many_shots_no_cascade",
+            context: "in_game",
+            tone: "sardonic",
+            condition: "shotsSinceLastCascade >= 3 && boardNotImproving",
+            text: "Tres disparos sin derribo. Ensayo prolongado."
+        },
+        {
+            id: "mid_wasted_bounce",
+            context: "in_game",
+            tone: "sardonic",
+            condition: "isBounceShot && !createdCluster && !improvedBoard",
+            text: "El ángulo era válido. La jugada, no tanto."
+        },
+        {
+            id: "mid_board_near_death",
+            context: "in_game",
+            tone: "tactical",
+            condition: "nearDeathState == true",
+            text: "Cuando todo sube, solo sirve un disparo que haga caer."
+        },
 
-    // POST PARTIDA
-    {
-      id: "post_heavy_disconnect_play",
-      context: "post",
-      tone: "tactical",
-      condition: "fallenByDisconnectionRatio >= 0.6 && result == 'win'",
-      text: "Sistema Explicalia:\nHas jugado a derribar,\nno a decorar el tablero."
-    },
-    {
-      id: "post_fast_loss",
-      context: "post",
-      tone: "sardonic",
-      condition: "result == 'lose' && gameDurationMs < 60000",
-      text: "Sistema Explicalia:\nHay partidas cortas.\nY luego está esta."
-    },
-    {
-      id: "post_long_fight_loss",
-      context: "post",
-      tone: "sardonic",
-      condition: "result == 'lose' && nearDeathMoments > 0 && totalShots > 25",
-      text: "Sistema Explicalia:\nEl tablero te dio varias salidas.\nElegiste quedarte dentro."
-    },
-    {
-      id: "post_clean_win",
-      context: "post",
-      tone: "tactical",
-      condition: "result == 'win' && remainingBubbles <= 5",
-      text: "Sistema Explicalia:\nAsí se ve un tablero bien leído."
-    }
-  ];
+        // POST PARTIDA
+        {
+            id: "post_heavy_disconnect_play",
+            context: "post",
+            tone: "tactical",
+            condition: "fallenByDisconnectionRatio >= 0.6 && result == 'win'",
+            text: "Has jugado a derribar, no a decorar el tablero."
+        },
+        {
+            id: "post_fast_loss",
+            context: "post",
+            tone: "sardonic",
+            condition: "result == 'lose' && gameDurationMs < 60000",
+            text: "Hay partidas cortas. Y luego está esta."
+        },
+        {
+            id: "post_long_fight_loss",
+            context: "post",
+            tone: "sardonic",
+            condition: "result == 'lose' && nearDeathMoments > 0 && totalShots > 25",
+            text: "El tablero te dio varias salidas. Elegiste quedarte dentro."
+        },
+        {
+            id: "post_clean_win",
+            context: "post",
+            tone: "tactical",
+            condition: "result == 'win' && remainingBubbles <= 5",
+            text: "Así se ve un tablero bien leído."
+        }
+    ];
 
   function resetForNewGame() {
     inGameMessagesShown = 0;
@@ -1652,7 +2010,7 @@ const ExplicaliaSystem = (() => {
     const name = getPlayerNameSafe();
     const message = pickPreGameMessage(playerState, globalStats, name);
     if (message) {
-      UIController.showExplicaliaPreMessage(message);
+      window.UIController.showExplicaliaPreMessage(message);
     }
   }
 
@@ -1661,7 +2019,7 @@ const ExplicaliaSystem = (() => {
     const name = getPlayerNameSafe();
     const message = pickInGameMessage(result, boardState, analytics, name);
     if (!message) return;
-    UIController.showExplicaliaBar(message);
+    window.UIController.showExplicaliaBar(message);
     inGameMessagesShown++;
     lastInGameMessageTime = performance.now();
   }
@@ -1670,7 +2028,7 @@ const ExplicaliaSystem = (() => {
     const name = getPlayerNameSafe();
     const lines = pickPostGameMessages(result, analytics, name);
     if (lines && lines.length) {
-      UIController.showExplicaliaPostMessage(lines, analytics);
+      window.UIController.showExplicaliaPostMessage(lines, analytics);
     }
   }
 
@@ -1706,23 +2064,42 @@ const ExplicaliaSystem = (() => {
     return personalizeText(randomFrom(candidates).text, name, analytics);
   }
 
-  function pickPostGameMessages(result, analytics, name) {
-    const context = "post";
-    const env = { result, analytics: analytics || {} };
-    const candidates = QUOTES.filter(q =>
-      q.context === context && evaluateCondition(q.condition, env)
-    );
-    if (!candidates.length) return [];
+    function pickPostGameMessages(result, analytics, name) {
+        const context = "post";
+        const env = { result, analytics: analytics || {} };
+        const candidates = QUOTES.filter(q =>
+            q.context === context && evaluateCondition(q.condition, env)
+        );
+        
+        const lines = [];
+        
+        // 1. Datos matemáticos espectaculares
+        if (analytics) {
+            const ratio = analytics.totalShots > 0 ? ((analytics.successfulShots * 3 + analytics.totalDropped) / analytics.totalShots).toFixed(2) : 0;
+            const time = Math.round(analytics.gameDurationMs / 1000);
+            lines.push(`DATOS TÁCTICOS: Eficiencia ${ratio}x | Nodos destruidos: ${analytics.successfulShots * 3 + analytics.totalDropped} | Ejecución: ${time}s`);
+        }
+        
+        // 2. Frase sarcástica/contextual (de los QUOTES)
+        if (candidates.length) {
+            const primary = randomFrom(candidates);
+            lines.push(personalizeText(primary.text, name, analytics));
+        } else {
+            lines.push(result === 'win' ? "Has sobrevivido a la probabilidad." : "La gravedad y la probabilidad han ganado esta vez.");
+        }
+        
+        // 3. Frase inspiradora/motivacional premium
+        const motivacionales = [
+            "El caos es solo orden esperando ser descifrado.",
+            "Un disparo perfecto no requiere fuerza, requiere visión.",
+            "Las grandes victorias se construyen burbuja a burbuja.",
+            "No juegues contra el tablero, haz que el tablero juegue para ti.",
+            "Cada fallo es simplemente telemetría para tu próximo éxito."
+        ];
+        lines.push(randomFrom(motivacionales));
 
-    const primary = randomFrom(candidates);
-    const lines = [personalizeText(primary.text, name, analytics)];
-
-    if (analytics && analytics.totalShots > 0) {
-      lines.push(`Disparos totales: ${analytics.totalShots}.`);
+        return lines;
     }
-
-    return lines;
-  }
 
   // --- Utilidades internas ---
 
@@ -1880,14 +2257,14 @@ window.UIController = (() => {
     const signatureEl = summary.querySelector(".quote-signature");
     const informeEl = document.getElementById("informe-content");
 
-    if (sarcasmEl && lines && lines[0]) {
-      sarcasmEl.textContent = lines[0];
+    if (sarcasmEl && lines && lines.length >= 3) {
+      sarcasmEl.innerHTML = `<span style="font-size: 11px; color: var(--gold); letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase;">${lines[0]}</span><br><br><span style="font-size: 15px; font-style: italic; font-weight: 500;">"${lines[1]}"</span>`;
     }
-    if (motivationEl && lines && lines[1]) {
-      motivationEl.textContent = lines[1];
+    if (motivationEl && lines && lines.length >= 3) {
+      motivationEl.innerHTML = `<strong style="color: white; font-size: 16px;">${lines[2]}</strong>`;
     }
     if (signatureEl) {
-      signatureEl.textContent = "Sistema Explicalia";
+      signatureEl.style.display = 'none'; // Don't waste space with the signature
     }
 
     if (informeEl && analytics) {
@@ -1941,7 +2318,7 @@ window.UIController = (() => {
     const Config = {
         GRID_COLS: 11, 
         GRID_ROWS: 18, 
-        MAX_LEVEL: 7,
+        MAX_LEVEL: 9,
         PHYSICS_STEP: 8, 
         BULLET_SPEED: 32, 
         HITBOX_RATIO: 0.8,
@@ -1954,6 +2331,7 @@ window.UIController = (() => {
             { id: 4, main: '#9C27B0', light: '#CE93D8', name: 'Violeta' },
             { id: 5, main: '#FF5722', light: '#FF8A65', name: 'Naranja' }
         ],
+        STONE_COLOR: { id: 99, main: '#757575', light: '#BDBDBD', name: 'Piedra', isStone: true },
         QUOTES: { 
             win: { 
                 sarcasm: [
@@ -2027,25 +2405,38 @@ window.UIController = (() => {
     // GAME SETTINGS
     // ============================================================
     const GameSettings = {
-        bulletSpeed: 32,
+        bulletSpeed: 52,
         showTrajectory: true,
         visualEffects: true,
-        bubbleSize: 1.0,
+        bubbleSize: 1.15,
+        darkMode: true,
         trajectoryWidth: 2,
+        haptics: true,
+        colorblind: false,
+        screenshake: true,
         load: function() {
             try {
                 const saved = localStorage.getItem('bubbleShooterSettings');
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    this.bulletSpeed = parsed.bulletSpeed || 52; // Default rápida
-                    this.visualEffects = parsed.visualEffects !== false ? true : false; // Default on
-                    this.bubbleSize = parsed.bubbleSize || 1.15; // Default L
+                    this.bulletSpeed = parsed.bulletSpeed || 52;
+                    this.visualEffects = parsed.visualEffects !== false;
+                    this.bubbleSize = parsed.bubbleSize || 1.15;
+                    this.darkMode = parsed.darkMode !== false;
+                    this.showTrajectory = parsed.showTrajectory !== false;
                     this.trajectoryWidth = parsed.trajectoryWidth || 2;
+                    this.haptics = parsed.haptics !== false;
+                    this.colorblind = parsed.colorblind === true;
+                    this.screenshake = parsed.screenshake !== false;
                 } else {
-                    // Defaults si no saved
                     this.bulletSpeed = 52;
                     this.visualEffects = true;
                     this.bubbleSize = 1.15;
+                    this.darkMode = true;
+                    this.showTrajectory = true;
+                    this.haptics = true;
+                    this.colorblind = false;
+                    this.screenshake = true;
                 }
             } catch(e) { console.warn('Settings load failed', e); }
         },
@@ -2053,14 +2444,57 @@ window.UIController = (() => {
             try {
                 localStorage.setItem('bubbleShooterSettings', JSON.stringify({
                     bulletSpeed: this.bulletSpeed,
-                    showTrajectory: this.showTrajectory,
                     visualEffects: this.visualEffects,
                     bubbleSize: this.bubbleSize,
-                    trajectoryWidth: this.trajectoryWidth
+                    darkMode: this.darkMode,
+                    showTrajectory: this.showTrajectory,
+                    trajectoryWidth: this.trajectoryWidth,
+                    haptics: this.haptics,
+                    colorblind: this.colorblind,
+                    screenshake: this.screenshake
                 }));
             } catch(e) { console.warn('Settings save failed', e); }
+        },
+        apply: function() {
+            if (this.darkMode) {
+                document.body.style.background = '#000000';
+            } else {
+                document.body.style.background = 'var(--bg-main)';
+            }
+            
+            const dmToggle = document.getElementById('toggle-dark-mode');
+            if (dmToggle) {
+                if (this.darkMode) dmToggle.classList.add('active');
+                else dmToggle.classList.remove('active');
+            }
+            const trajToggle = document.getElementById('toggle-trajectory');
+            if (trajToggle) {
+                if (this.showTrajectory) trajToggle.classList.add('active');
+                else trajToggle.classList.remove('active');
+            }
+            const hapticToggle = document.getElementById('toggle-haptics');
+            if (hapticToggle) {
+                if (this.haptics) hapticToggle.classList.add('active');
+                else hapticToggle.classList.remove('active');
+            }
+            const colorblindToggle = document.getElementById('toggle-colorblind');
+            if (colorblindToggle) {
+                if (this.colorblind) colorblindToggle.classList.add('active');
+                else colorblindToggle.classList.remove('active');
+            }
+            const screenshakeToggle = document.getElementById('toggle-screenshake');
+            if (screenshakeToggle) {
+                if (this.screenshake) screenshakeToggle.classList.add('active');
+                else screenshakeToggle.classList.remove('active');
+            }
+        },
+        vibrate: function(pattern) {
+            if (this.haptics && navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
         }
     };
+
 
     // ============================================================
     // SECURE STORAGE
@@ -2123,8 +2557,38 @@ window.UIController = (() => {
         constructor(events) { 
             this.ctx = null; 
             this.isMuted = false; 
-            events.on(Events.AUDIO_PLAY, ({type, param}) => this.play(type, param)); 
-            events.on(Events.AUDIO_MELODY, ({type}) => this.playMelody(type)); 
+            events.on(Events.AUDIO_PLAY, ({type, param}) => {
+                this.play(type, param);
+                if (type === 'shoot') GameSettings.vibrate(10);
+                if (type === 'pop') GameSettings.vibrate(15);
+                if (type === 'drop') {
+                    GameSettings.vibrate([15, 30, 20]);
+                    if (GameSettings.screenshake) {
+                        const gc = document.getElementById('game-container');
+                        if (gc) {
+                            gc.classList.remove('shake-epic');
+                            void gc.offsetWidth;
+                            gc.classList.add('shake-epic');
+                        }
+                    }
+                }
+                if (type === 'combo') {
+                    GameSettings.vibrate([20, 20, 30]);
+                    if (GameSettings.screenshake && param > 1) {
+                        const gc = document.getElementById('game-container');
+                        if (gc) {
+                            gc.classList.remove('shake-epic');
+                            void gc.offsetWidth;
+                            gc.classList.add('shake-epic');
+                        }
+                    }
+                }
+            }); 
+            events.on(Events.AUDIO_MELODY, ({type}) => {
+                this.playMelody(type);
+                if (type === 'start') GameSettings.vibrate([30, 50, 40]);
+                if (type === 'over') GameSettings.vibrate([50, 100, 100, 200]);
+            }); 
         }
         
         init() { 
@@ -2338,11 +2802,11 @@ window.UIController = (() => {
         countCanvasListeners() {
             try {
                 const canvas = this.game.renderer.canvas;
-                if (typeof getEventListeners === 'function') {
-                    const listeners = getEventListeners(canvas);
+                if (typeof window.getEventListeners === 'function') {
+                    const listeners = window.getEventListeners(canvas);
                     return Object.keys(listeners).reduce((sum, key) => sum + listeners[key].length, 0);
                 }
-            } catch(e) {}
+            } catch(e) { /* ignore */ }
             return -1;
         }
         
@@ -2532,7 +2996,7 @@ window.UIController = (() => {
                 attemptsLeft: this.game.attemptsLeft,
                 aiUsesLeft: this.game.aiUsesLeft,
                 swapUses: this.game.swapUses,
-                shotsUntilDrop: this.game.shotsUntilDrop,
+                ammoCount: this.game.ammoCount,
                 currentBubble: this.game.currentBubble ? {
                     exists: true,
                     x: this.game.currentBubble.x,
@@ -3021,7 +3485,7 @@ window.UIController = (() => {
                     <div style="color: #0A84FF; font-weight: bold; margin-bottom: 5px;">📊 RECURSOS</div>
                     <div>IA usos: ${g.aiUsesLeft}</div>
                     <div>Swaps: ${g.swapUses}</div>
-                    <div>Shots hasta drop: ${g.shotsUntilDrop}</div>
+                    <div>Burbujas restantes: ${g.ammoCount}</div>
                     <div>Intentos: ${g.attemptsLeft}</div>
                     <div style="color: #FFD60A;">Swap Reserve: ${g.swapReserveColor ? g.swapReserveColor.name : 'N/A'}</div>
                 </div>
@@ -3152,7 +3616,7 @@ window.UIController = (() => {
                 const context = document.getElementById('expl-context').value;
                 const condition = document.getElementById('expl-condition').value;
                 const name = document.getElementById('expl-name').value;
-                let message = '';
+                let message;
                 const env = { result: 'win', boardState: {nearDeathState: true}, analytics: {fallenByDisconnectionThisShot: 12, shotsSinceLastCascade: 4, boardNotImproving: true, isBounceShot: true, createdCluster: false, improvedBoard: false, gameDurationMs: 50000, nearDeathMoments: 2, totalShots: 30, remainingBubbles: 4} }; // Sample env
                 
                 if (context === 'pre') {
@@ -3196,155 +3660,57 @@ window.UIController = (() => {
             }
         }
         
-        // ============================================================
-        // SISTEMA DE GENERACIÓN DE COLORES SIN 3 CONSECUTIVOS
-        // ============================================================
-        
-        /**
-         * Verifica si colocar un color en (r,c) crearía 3 consecutivos
-         * Revisa horizontal, diagonal-izq y diagonal-der
-         */
-        wouldCreate3Consecutive(r, c, colorId) {
-            // Verificar horizontal (mismo row, columnas adyacentes)
-            let hCount = 1;
-            // Izquierda
-            for (let cc = c - 1; cc >= 0 && this.grid[r][cc] && this.grid[r][cc].color.id === colorId; cc--) hCount++;
-            // Derecha
-            for (let cc = c + 1; cc < Config.GRID_COLS && this.grid[r][cc] && this.grid[r][cc].color.id === colorId; cc++) hCount++;
-            if (hCount >= 3) return true;
-            
-            // Verificar diagonal descendente (\)
-            let d1Count = 1;
-            for (let i = 1; r - i >= 0 && c - i >= 0 && this.grid[r-i][c-i] && this.grid[r-i][c-i].color.id === colorId; i++) d1Count++;
-            for (let i = 1; r + i < Config.GRID_ROWS && c + i < Config.GRID_COLS && this.grid[r+i] && this.grid[r+i][c+i] && this.grid[r+i][c+i].color.id === colorId; i++) d1Count++;
-            if (d1Count >= 3) return true;
-            
-            // Verificar diagonal ascendente (/)
-            let d2Count = 1;
-            for (let i = 1; r - i >= 0 && c + i < Config.GRID_COLS && this.grid[r-i][c+i] && this.grid[r-i][c+i].color.id === colorId; i++) d2Count++;
-            for (let i = 1; r + i < Config.GRID_ROWS && c - i >= 0 && this.grid[r+i] && this.grid[r+i][c-i] && this.grid[r+i][c-i].color.id === colorId; i++) d2Count++;
-            if (d2Count >= 3) return true;
-            
-            return false;
-        }
-        
-        /**
-         * Selecciona un color válido que NO cree 3 consecutivos en posición (r,c)
-         */
-        pickColorWithoutConsecutive(r, c, numColors) {
-            const availableColors = [];
-            for (let i = 0; i < numColors; i++) {
-                if (!this.wouldCreate3Consecutive(r, c, i)) {
-                    availableColors.push(i);
+        getColorsInPlay() {
+            let colors = new Set();
+            for (let r = 0; r < Config.GRID_ROWS; r++) {
+                if (!this.grid[r]) continue;
+                for (let c = 0; c < Config.GRID_COLS; c++) {
+                    if (this.grid[r][c] && this.grid[r][c].color) {
+                        colors.add(this.grid[r][c].color.id);
+                    }
                 }
             }
-            
-            // Si todos los colores crearían 3 consecutivos, elegir el menos problemático
-            if (availableColors.length === 0) {
-                return Math.floor(Math.random() * numColors);
-            }
-            
-            return availableColors[Math.floor(Math.random() * availableColors.length)];
+            return colors.size;
         }
         
-        /**
-         * Inicializa nivel con restricción de NO 3 consecutivos
-         */
+        cloneGrid() {
+            return this.grid.map(row => row.map(cell => cell ? { ...cell } : null));
+        }
+
         initLevel(p) { 
             this.resetEmpty();
             const numColors = Math.min(p.colors, Config.COLORS.length);
             const level = p.level || 1;
             
-            // Ajuste progresivo entre niveles: menos rows/colores en bajos
-            p.rows = Math.max(4, Math.min(10, 4 + level)); // Menos a más
+            // Progressive difficulty rows
+            p.rows = p.rows || Math.max(4, Math.min(10, 4 + Math.floor(level / 2)));
+            const stoneChance = p.stoneChance || 0;
             
-            // Generar con dificultad decreciente en partida: más clusters abajo
+            // Pre-fill with random colors
             for (let r = 0; r < p.rows; r++) {
                 for (let c = 0; c < Config.GRID_COLS; c++) {
                     if (r % 2 !== 0 && c === Config.GRID_COLS - 1) continue;
-                    const colorId = this.pickColorWithoutConsecutive(r, c, numColors);
-                    this.grid[r][c] = { color: Config.COLORS[colorId] };
-                }
-            }
-            
-            // Añadir más clusters en rows bajas (fácil fin partida)
-            const clusterBias = p.rows - Math.floor(p.rows * 0.4); // Bias a bottom
-            this.addProgressivePatternsSecure(p.rows, numColors, level, clusterBias);
-            
-            // Asegurar ganable
-            if (!this.isSolvableProgressive(numColors, level)) {
-                this.addGuaranteedClusters(p.rows, numColors);
-            }
-        }
-        
-        /**
-         * Añade patrones progresivos SIN crear 3 consecutivos
-         */
-        addProgressivePatternsSecure(rows, numColors, level, biasRow = rows / 2) {
-            const clusterCount = level <= 3 ? Math.floor(rows * 0.4) : Math.floor(rows * 0.2); // Menos clusters en altos niveles
-            for (let i = 0; i < clusterCount; i++) {
-                const r = Math.floor(Math.random() * (rows - biasRow)) + biasRow; // Bias a bottom
-                const c = Math.floor(Math.random() * (Config.GRID_COLS - 1));
-                if (!this.grid[r] || !this.grid[r][c]) continue;
-                const targetColor = this.grid[r][c].color;
-                if (c + 1 < Config.GRID_COLS && this.grid[r][c + 1]) {
-                    if (!this.wouldCreate3Consecutive(r, c + 1, targetColor.id)) {
-                        this.grid[r][c + 1] = { color: targetColor };
-                    }
-                }
-            }
-        }
-        
-        /**
-         * Añade clusters garantizados para solvabilidad
-         */
-        addGuaranteedClusters(rows, numColors) {
-            // Crear al menos 2 pares de colores alcanzables
-            for (let colorIdx = 0; colorIdx < Math.min(2, numColors); colorIdx++) {
-                const targetRow = Math.min(rows - 1, Math.floor(Math.random() * 3) + (rows - 4));
-                const targetCol = Math.floor(Math.random() * (Config.GRID_COLS - 2)) + 1;
-                
-                if (this.grid[targetRow] && this.grid[targetRow][targetCol]) {
-                    const color = Config.COLORS[colorIdx];
-                    this.grid[targetRow][targetCol] = { color: color };
-                    
-                    // Añadir uno adyacente si no crea 3 consecutivos
-                    const neighbors = this.getNeighbors(targetRow, targetCol);
-                    for (const n of neighbors) {
-                        if (this.grid[n.r] && this.grid[n.r][n.c] && !this.wouldCreate3Consecutive(n.r, n.c, colorIdx)) {
-                            this.grid[n.r][n.c] = { color: color };
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
-        /**
-         * Verifica solvabilidad progresiva
-         */
-        isSolvableProgressive(numColors, level) {
-            let pairsFound = 0;
-            const minPairs = level <= 3 ? 3 : 2;
-            
-            for (let r = 0; r < this.grid.length; r++) {
-                for (let c = 0; c < Config.GRID_COLS; c++) {
-                    if (this.grid[r] && this.grid[r][c]) {
-                        const colorId = this.grid[r][c].color.id;
-                        const neighbors = this.getNeighbors(r, c);
-                        
-                        for (const n of neighbors) {
-                            if (this.grid[n.r] && this.grid[n.r][n.c] && 
-                                this.grid[n.r][n.c].color.id === colorId) {
-                                pairsFound++;
-                                break;
-                            }
-                        }
+                    if (stoneChance > 0 && Math.random() < stoneChance) {
+                        this.grid[r][c] = { color: Config.STONE_COLOR };
+                    } else {
+                        this.grid[r][c] = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
                     }
                 }
             }
             
-            return pairsFound >= minPairs;
+            // Remove Cellular Automata to avoid massive single-color blobs.
+            // Pure random generation naturally creates organic, industry-standard clusters (pairs and triplets).
+            // We just ensure no massive blocks form by keeping it purely randomized.
+            
+            // Guarantee at least one massive 3-bubble cluster at the very bottom so the player always has a starting move
+            const bottomRow = p.rows - 1;
+            const startCol = Math.floor(Config.GRID_COLS / 2);
+            const startColor = Math.floor(Math.random() * numColors);
+            this.grid[bottomRow][startCol] = { color: Config.COLORS[startColor] };
+            if (this.grid[bottomRow][startCol - 1]) this.grid[bottomRow][startCol - 1] = { color: Config.COLORS[startColor] };
+            if (this.grid[bottomRow - 1] && this.grid[bottomRow - 1][startCol]) this.grid[bottomRow - 1][startCol] = { color: Config.COLORS[startColor] };
+            
+            return true;
         }
 
         countBubbles() {
@@ -3395,7 +3761,7 @@ window.UIController = (() => {
         }
 
         findMatches(r, c, id) {
-            if (!this.grid[r] || !this.grid[r][c] || this.grid[r][c].color.id !== id) return [];
+            if (!this.grid[r] || !this.grid[r][c] || this.grid[r][c].color.id !== id || this.grid[r][c].color.isStone) return [];
             let v = new Set(), q = [{r, c}], m = []; 
             v.add(`${r},${c}`); 
             m.push({r, c});
@@ -3485,24 +3851,25 @@ window.UIController = (() => {
             return true;
         }
 
-        /**
-         * CORREGIDO: pickValidColor para cola de burbujas
-         * Evita 3 colores consecutivos en la cola
-         */
         pickValidColor(hCheck, recentColors = []) {
             let ex = new Set(), da = new Set(), maxR = -1;
+            let colorCounts = {};
+
             for(let r = 0; r < Config.GRID_ROWS; r++) {
                 for(let c = 0; c < Config.GRID_COLS; c++) {
-                    if(this.grid[r] && this.grid[r][c]) { 
-                        ex.add(this.grid[r][c].color.id); 
+                    if(this.grid[r] && this.grid[r][c] && !this.grid[r][c].color.isStone) { 
+                        let cid = this.grid[r][c].color.id;
+                        ex.add(cid); 
                         if (r > maxR) maxR = r; 
+                        colorCounts[cid] = (colorCounts[cid] || 0) + 1;
                     }
                 }
             }
             if (!ex.size) return Config.COLORS[0];
             
             if (maxR >= 0) {
-                for(let r = Math.max(0, maxR - 1); r <= maxR; r++) {
+                // Zona de peligro ampliada a las últimas 3 filas
+                for(let r = Math.max(0, maxR - 2); r <= maxR; r++) {
                     for(let c = 0; c < Config.GRID_COLS; c++) {
                         if(this.grid[r] && this.grid[r][c]) da.add(this.grid[r][c].color.id);
                     }
@@ -3511,52 +3878,52 @@ window.UIController = (() => {
             
             let all = Array.from(ex), dang = Array.from(da);
             
-            // NUEVO: Filtrar colores que crearían 3 consecutivos en la cola
+            // Filtrar colores que crearían 3 consecutivos en la cola
             let validColors = all.filter(colorId => {
-                // Si los últimos 2 colores son iguales, no permitir el mismo
                 if (recentColors.length >= 2) {
                     const last = recentColors[recentColors.length - 1];
                     const secondLast = recentColors[recentColors.length - 2];
-                    if (last === secondLast && colorId === last) {
-                        return false;
-                    }
+                    if (last === secondLast && colorId === last) return false;
                 }
                 return true;
             });
             
-            // Si no hay colores válidos, usar cualquiera excepto el último
             if (validColors.length === 0) {
                 validColors = all.filter(c => recentColors.length === 0 || c !== recentColors[recentColors.length - 1]);
                 if (validColors.length === 0) validColors = all;
             }
             
-            // Preferir colores de la zona de peligro
+            // Dopamine Engine: Ajustar probabilidad según el estado del jugador
             let dangerValid = validColors.filter(c => dang.includes(c));
-            
-            // Nueva ayuda sutil
-            const timeMs = this.game ? this.game.levelElapsedTime : 0;
-            const helpActive = timeMs > 600000 && timeMs < 900000;
-            if (helpActive && Math.random() < 0.9) { // 90% chance, sutil
-                if (dang.length > 0) {
-                    return Config.COLORS[dang[Math.floor(Math.random() * dang.length)]];
-                }
-            }
-            
-            // 2.1: Ajuste sutil basado en tiempo
-            const levelLimitMs = (Config.TIME_LIMITS[this.game.level] || 5) * 60 * 1000;
-            const timeRatio = timeMs / levelLimitMs;
-            if (timeRatio > 0.8 && Math.random() < timeRatio - 0.8) { // Prob creciente si cerca del límite
-                // Aumentar prob de color "fácil" (en danger zone)
-                if (dangerValid.length > 0) {
+            if (all.length === 1) return Config.COLORS[all[0]];
+
+            // 1. "Momentos Épicos" (Clutch moments): Si queda poca munición, ayudarle
+            const ammo = this.game && this.game.ammoCount !== undefined ? this.game.ammoCount : 100;
+            if (ammo < 12 && dangerValid.length > 0) {
+                if (Math.random() < 0.85) { // 85% de darle lo que necesita abajo
                     return Config.COLORS[dangerValid[Math.floor(Math.random() * dangerValid.length)]];
                 }
             }
+
+            // 2. "Satisfacción de Explosión" (Dopamine hit)
+            let mostAbundant = validColors[0];
+            for (let c of validColors) {
+                if (colorCounts[c] > colorCounts[mostAbundant]) mostAbundant = c;
+            }
             
-            if (all.length === 1) return Config.COLORS[all[0]];
-            if (hCheck(maxR) && dangerValid.length > 0 && Math.random() < 0.7) {
+            const r = Math.random();
+            
+            // 3. Sistema Anti-Frustración: Si el nivel baja mucho, dar colores de la zona baja
+            if (hCheck(maxR) && dangerValid.length > 0 && r < 0.70) {
                 return Config.COLORS[dangerValid[Math.floor(Math.random() * dangerValid.length)]];
             }
             
+            // 4. Crear "Derrumbes" (Clusters grandes): Alta prob de dar el color más numeroso
+            if (r < 0.40 && colorCounts[mostAbundant] >= 5) {
+                return Config.COLORS[mostAbundant];
+            }
+            
+            // Fallback: Aleatorio entre válidos
             return Config.COLORS[validColors[Math.floor(Math.random() * validColors.length)]];
         }
 
@@ -3618,16 +3985,19 @@ window.UIController = (() => {
             if (w === 0 || h === 0) return; 
             this.width = w; 
             this.height = h; 
-            this.tileSize = w / (Config.GRID_COLS + 0.5); 
-            this.radius = this.tileSize / 2 - 2; 
-            this.offsetX = (w - (Config.GRID_COLS * this.tileSize)) / 2; 
+            
+            // Garantizar simetría perfecta:
+            // Las filas impares sobresalen medio bubble a la derecha, pero tienen una burbuja menos.
+            // Ancho total necesario = GRID_COLS burbujas.
+            // Dejamos un 4% de ancho total como márgenes (2% izquierda, 2% derecha).
+            const paddingX = w * 0.04;
+            const usableWidth = w - paddingX;
+            
+            this.tileSize = usableWidth / Config.GRID_COLS; 
+            this.radius = this.tileSize / 2; 
+            
+            this.offsetX = paddingX / 2; 
             this.rowHeight = this.tileSize * Math.sin(Math.PI/3); 
-
-            // Aspect ratio lock (e.g., max 0.6 for portrait-like game)
-            const aspect = w / h;
-            if (aspect > 0.6) {
-                this.width = h * 0.6;
-            }
         }
 
         getGridPos(r, c) { 
@@ -3702,10 +4072,17 @@ window.UIController = (() => {
                     if (matches.length >= 3) {
                         score += matches.length * 10;
                         if (matches.length > 5) score += 50; 
+                        
+                        // Simulate dropped bubbles for accurate heuristic
+                        let backup = matches.map(m => ({r: m.r, c: m.c, cell: this.model.getCell(m.r, m.c)}));
+                        backup.forEach(m => this.model.setCell(m.r, m.c, null));
+                        let drops = this.model.getFloatingBubbles();
+                        score += drops.length * 30; // High value for dropping bubbles
+                        backup.forEach(m => this.model.setCell(m.r, m.c, m.cell));
                     }
                     this.model.setCell(snap.r, snap.c, null); 
-                    if (score === 0 && matches.length < 3) return { score:0, angle, bounces: ghost.bounces, type:"Posición" };
-                    return { score, angle, bounces: ghost.bounces, type: ghost.bounces > 0 ? "Rebote" : "Directo" };
+                    if (score === 0 && matches.length < 3) return { score:0, angle, bounces: ghost.bounces, type:"Posición", snap };
+                    return { score, angle, bounces: ghost.bounces, type: ghost.bounces > 0 ? "Rebote" : "Directo", snap };
                 }
             }
             return null;
@@ -3781,6 +4158,16 @@ window.UIController = (() => {
             this.ctx.beginPath();
             this.ctx.arc(x - actualRadius * .3, y - actualRadius * .3, actualRadius * .2, 0, Math.PI * 2);
             this.ctx.fill();
+            
+            if (GameSettings.colorblind && c.id !== undefined && r > 5) {
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.font = `bold ${actualRadius * 0.8}px sans-serif`;
+                const symbols = ['●', '▲', '■', '★', '♦', '♥', '✿'];
+                this.ctx.fillText(symbols[c.id % symbols.length], x, y + 1);
+            }
+            
             this.ctx.globalAlpha = 1;
         }
         
@@ -3830,45 +4217,19 @@ window.UIController = (() => {
                 this.ctx.beginPath();
                 this.ctx.moveTo(0, dangerY);
                 this.ctx.lineTo(lw, dangerY);
-                this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.15)';
-                this.ctx.lineWidth = 8;
-                this.ctx.shadowColor = '#FF0000';
-                this.ctx.shadowBlur = 20;
-                this.ctx.stroke();
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, dangerY);
-                this.ctx.lineTo(lw, dangerY);
-                this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.4)';
-                this.ctx.lineWidth = 3;
-                this.ctx.shadowColor = '#FF0000';
-                this.ctx.shadowBlur = 10;
-                this.ctx.stroke();
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, dangerY);
-                this.ctx.lineTo(lw, dangerY);
-                this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+                this.ctx.strokeStyle = '#FF3B30';
                 this.ctx.lineWidth = 1;
-                this.ctx.shadowColor = '#FF0000';
-                this.ctx.shadowBlur = 6;
+                this.ctx.shadowColor = '#FF3B30';
+                this.ctx.shadowBlur = 8;
                 this.ctx.stroke();
                 
                 this.ctx.beginPath();
                 this.ctx.moveTo(0, dangerY);
                 this.ctx.lineTo(lw, dangerY);
-                this.ctx.strokeStyle = '#FF0000';
-                this.ctx.lineWidth = 0.2;
-                this.ctx.shadowColor = '#FF0000';
-                this.ctx.shadowBlur = 5;
-                this.ctx.stroke();
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, dangerY);
-                this.ctx.lineTo(lw, dangerY);
-                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-                this.ctx.lineWidth = 0.1;
-                this.ctx.shadowBlur = 0;
+                this.ctx.strokeStyle = '#FFFFFF';
+                this.ctx.lineWidth = 0.3;
+                this.ctx.shadowColor = '#FF3B30';
+                this.ctx.shadowBlur = 4;
                 this.ctx.stroke();
                 
                 this.ctx.restore();
@@ -4036,7 +4397,7 @@ window.UIController = (() => {
             this.playerName = null;
             
             this.tutorialSteps = [
-                {text: 'Desliza para apuntar. Suelta para disparar. Usa rebotes.', highlight: '#gameCanvas'},
+                {text: '(Aviso: Este tutorial solo es obligatorio la primera vez que juegas en el sistema).\n\nDesliza para apuntar. Suelta para disparar. Usa rebotes.', highlight: '#gameCanvas'},
                 {text: 'Usa IA HELP si atascado. 3 usos por nivel.', highlight: '#aiCapsule'},
                 {text: 'Intercambia burbujas con SWAP. Cambia al color anterior.', highlight: '#swapCapsule'},
                 {text: 'Progreso se guarda automáticamente.', highlight: null}
@@ -4063,6 +4424,7 @@ window.UIController = (() => {
             this.playerIsNew = true;
 
             GameSettings.load();
+            GameSettings.apply();
             this.loadProgress();
             
             this.healthMonitor = new GameHealthMonitor(this);
@@ -4073,15 +4435,12 @@ window.UIController = (() => {
             requestAnimationFrame(this.loop);
             this.audio.init();
             
-            // Full height fix
-            this.setFullHeight();
             let resizeTimeout;
             const throttledResize = () => {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
                     this.handleResize();
-                    this.setFullHeight();
-                }, 100);
+                }, 10);
             };
             window.addEventListener('resize', throttledResize);
             window.addEventListener('orientationchange', throttledResize);
@@ -4090,9 +4449,6 @@ window.UIController = (() => {
             }
         }
 
-        setFullHeight() {
-            document.body.style.height = `${window.innerHeight}px`;
-        }
 
         // ============================================================
         // SISTEMA DE SELECCIÓN DE COLOR PARA COLA (SIN 3 CONSECUTIVOS)
@@ -4172,28 +4528,45 @@ window.UIController = (() => {
                 const welcomeMsg = document.getElementById('welcome-message');
                 const resetBtn = document.getElementById('resetUserBtn');
                 
+                const persistentName = localStorage.getItem('playerName');
+                
                 if (saved && Array.isArray(saved.grid) && Number.isFinite(saved.level) && saved.playerName) {
-                    badge.innerText = 'PARTIDA GUARDADA'; 
+                    badge.innerText = `PARTIDA GUARDADA (Nivel ${saved.level})`; 
                     badge.classList.remove('empty'); 
                     badgeContainer.classList.remove('display-none');
                     nameInput.classList.add('display-none');
                     welcomeMsg.innerText = `Jugador: ${saved.playerName}`; 
                     welcomeMsg.classList.remove('display-none');
                     resetBtn.classList.remove('display-none');
+                    const resumeBtn = document.getElementById('resumeSavedGameBtn');
+                    if (resumeBtn) resumeBtn.classList.remove('display-none');
                     this.playerName = saved.playerName;
                     this.playerIsNew = false;
                     this.totalGames = saved.totalGames || 0;
                     this.retriesOnCurrentLevel = saved.retriesOnCurrentLevel || 0;
+                    localStorage.setItem('playerName', saved.playerName);
                 } else {
                     badge.innerText = 'NO HAY PARTIDA GUARDADA'; 
                     badge.classList.add('empty'); 
                     badgeContainer.classList.remove('display-none');
-                    nameInput.classList.remove('display-none');
-                    nameInput.value = ''; 
-                    nameInput.placeholder = 'Introduce tu nombre';
-                    nameInput.required = true;
-                    welcomeMsg.classList.add('display-none'); 
-                    resetBtn.classList.add('display-none');
+                    
+                    if (persistentName) {
+                        nameInput.classList.add('display-none');
+                        welcomeMsg.innerText = `Jugador: ${persistentName}`;
+                        welcomeMsg.classList.remove('display-none');
+                        resetBtn.classList.remove('display-none');
+                        this.playerName = persistentName;
+                        this.playerIsNew = false;
+                    } else {
+                        nameInput.classList.remove('display-none');
+                        nameInput.value = ''; 
+                        nameInput.placeholder = 'Introduce tu nombre';
+                        nameInput.required = true;
+                        welcomeMsg.classList.add('display-none'); 
+                        resetBtn.classList.add('display-none');
+                        const resumeBtn = document.getElementById('resumeSavedGameBtn');
+                        if (resumeBtn) resumeBtn.classList.add('display-none');
+                    }
                 }
             } catch(e) { 
                 console.warn('Error loading progress:', e);
@@ -4232,8 +4605,10 @@ window.UIController = (() => {
         unbindGameplayListeners() {
             if (!this.boundHandlers.input) return;
             const canvas = this.renderer.canvas;
+            canvas.removeEventListener('mousedown', this.boundHandlers.input);
             canvas.removeEventListener('mousemove', this.boundHandlers.input);
             canvas.removeEventListener('mouseup', this.boundHandlers.input);
+            canvas.removeEventListener('touchstart', this.boundHandlers.input);
             canvas.removeEventListener('touchmove', this.boundHandlers.input);
             canvas.removeEventListener('touchend', this.boundHandlers.input);
             this.boundHandlers.input = null;
@@ -4257,15 +4632,17 @@ window.UIController = (() => {
                     this.guideLineAlpha = 0; 
                 }
                 let a = Math.atan2((cy - r.top) - this.currentBubble.y, (cx - r.left) - this.currentBubble.x);
-                if(a < -Math.PI + .1 && a > -Math.PI/2) a = -Math.PI + .1; 
-                if(a > -.1 && a < -Math.PI/2) a = -.1; 
+                if(a < -Math.PI + .02 && a > -Math.PI/2) a = -Math.PI + .02; 
+                if(a > -.02 && a < -Math.PI/2) a = -.02; 
                 if(a > 0) a = -Math.PI/2;
                 this.currentBubble.angle = a;
                 if(e.type === 'mouseup' || e.type === 'touchend') this.fire();
             };
             
+            canvas.addEventListener('mousedown', this.boundHandlers.input);
             canvas.addEventListener('mousemove', this.boundHandlers.input); 
             canvas.addEventListener('mouseup', this.boundHandlers.input); 
+            canvas.addEventListener('touchstart', this.boundHandlers.input, {passive: false});
             canvas.addEventListener('touchmove', this.boundHandlers.input, {passive: false}); 
             canvas.addEventListener('touchend', this.boundHandlers.input, {passive: false});
             
@@ -4338,7 +4715,9 @@ window.UIController = (() => {
             this.attemptsLeft = 0;
             this.aiUsesLeft = 3;
             this.swapUses = 3;
-            this.shotsUntilDrop = 8;
+            this.ammoCount = 0;
+            this.isAutoBotActive = false;
+            this.botWaitingToFire = false;
             this.sessionStats = { 
                 consecutive: 0, 
                 droppedMax: 0, 
@@ -4417,35 +4796,29 @@ window.UIController = (() => {
                 }, 10);
             });
             
-            safeAssign('campaignBtn', () => { 
-                const save = SecureStorage.load('bubbleShooterSave');
-                let nameInputVal = $('playerNameInput').value.trim();
-                if (nameInputVal.toLowerCase() === 'developer') {
-                    const pass = prompt("ACCESO RESTRINGIDO: Introduce contraseña de sistema");
-                    if (pass === 'Admin') { this.isGodMode = true; this.playerName = "Developer Mode"; }
-                    else { alert("❌ Acceso denegado"); return; }
-                } else if (!save || !save.playerName) {
-                    if (!nameInputVal) { alert('❌ Debes introducir tu nombre para jugar'); return; }
-                    if (!this.validatePlayerName(nameInputVal)) return;
-                    this.playerName = nameInputVal;
-                }
-                this.mode = 'tutorial'; 
-                Config.MAX_LEVEL = 1;
-                this.initGame();  // Direct to game, no tutorial screen
+            safeAssign('resumeSavedGameBtn', () => { 
+                this.initGame(true);
             });
             
+
+            
             safeAssign('expertBtn', () => { 
-                const save = SecureStorage.load('bubbleShooterSave');
+                const saved = SecureStorage.load('bubbleShooterSave');
+                if (saved && saved.grid && !confirm('Tienes una partida guardada. Si empiezas una nueva, perderás tu progreso actual. ¿Deseas empezar de cero?')) return;
                 let nameInputVal = $('playerNameInput').value.trim();
-                if (nameInputVal.toLowerCase() === 'developer') {
-                    const pass = prompt("ACCESO RESTRINGIDO: Introduce contraseña de sistema");
-                    if (pass === 'Admin') { this.isGodMode = true; this.playerName = "Developer Mode"; }
-                    else { alert("❌ Acceso denegado"); return; }
-                } else if (!save || !save.playerName) {
-                    if (!nameInputVal) { alert('❌ Debes introducir tu nombre para jugar'); return; }
-                    if (!this.validatePlayerName(nameInputVal)) return;
-                    this.playerName = nameInputVal;
+                if (!$('playerNameInput').classList.contains('display-none')) {
+                    if (nameInputVal.toLowerCase() === 'developer') {
+                        const pass = prompt("ACCESO RESTRINGIDO: Introduce contraseña de sistema");
+                        if (pass === 'Admin') { this.isGodMode = true; this.playerName = "Developer Mode"; }
+                        else { alert("❌ Acceso denegado"); return; }
+                    } else {
+                        if (!nameInputVal) { alert('❌ Debes introducir tu nombre para jugar'); return; }
+                        if (!this.validatePlayerName(nameInputVal)) return;
+                        this.playerName = nameInputVal;
+                        localStorage.setItem('playerName', this.playerName);
+                    }
                 }
+                
                 if (!localStorage.getItem(`tutorialDone_${this.playerName}`)) {
                     alert('Completa el tutorial para desbloquear el modo Experto.');
                     this.mode = 'tutorial'; 
@@ -4525,7 +4898,6 @@ window.UIController = (() => {
                 toggleVisualEffects.onclick = (e) => {
                     e.stopPropagation();
                     const isActive = toggleVisualEffects.classList.contains('active');
-                    
                     if (isActive) {
                         toggleVisualEffects.classList.remove('active');
                         GameSettings.visualEffects = false;
@@ -4533,12 +4905,84 @@ window.UIController = (() => {
                         toggleVisualEffects.classList.add('active');
                         GameSettings.visualEffects = true;
                     }
-                    
                     GameSettings.save();
-                    if (this.healthMonitor) this.healthMonitor.logEvent('SETTING_CHANGED', { setting: 'visualEffects', value: GameSettings.visualEffects });
                 };
             }
+            
+            const toggleDarkMode = $('toggle-dark-mode');
+            if (toggleDarkMode) {
+                toggleDarkMode.onclick = (e) => {
+                    e.stopPropagation();
+                    const isActive = toggleDarkMode.classList.contains('active');
+                    if (isActive) {
+                        toggleDarkMode.classList.remove('active');
+                        GameSettings.darkMode = false;
+                    } else {
+                        toggleDarkMode.classList.add('active');
+                        GameSettings.darkMode = true;
+                    }
+                    GameSettings.save();
+                    GameSettings.apply();
+                };
+            }
+            
+            const toggleTrajectory = $('toggle-trajectory');
+            if (toggleTrajectory) {
+                toggleTrajectory.onclick = (e) => {
+                    e.stopPropagation();
+                    const isActive = toggleTrajectory.classList.contains('active');
+                    if (isActive) {
+                        toggleTrajectory.classList.remove('active');
+                        GameSettings.showTrajectory = false;
+                    } else {
+                        toggleTrajectory.classList.add('active');
+                        GameSettings.showTrajectory = true;
+                    }
+                    GameSettings.save();
+                };
+            }
+            
+            const bindHapticToggle = (id) => {
+                const el = $(id);
+                if (el) {
+                    el.onclick = (e) => {
+                        e.stopPropagation();
+                        const isActive = el.classList.contains('active');
+                        if (isActive) {
+                            el.classList.remove('active');
+                            GameSettings.haptics = false;
+                        } else {
+                            el.classList.add('active');
+                            GameSettings.haptics = true;
+                        }
+                        GameSettings.save();
+                        GameSettings.apply(); // This syncs all haptic toggles
+                    };
+                }
+            };
+            bindHapticToggle('toggle-haptics');
+            bindHapticToggle('toggle-haptics-settings');
 
+            const bindSettingToggle = (id, settingName) => {
+                const el = $(id);
+                if (el) {
+                    el.onclick = (e) => {
+                        e.stopPropagation();
+                        const isActive = el.classList.contains('active');
+                        if (isActive) {
+                            el.classList.remove('active');
+                            GameSettings[settingName] = false;
+                        } else {
+                            el.classList.add('active');
+                            GameSettings[settingName] = true;
+                        }
+                        GameSettings.save();
+                        GameSettings.apply();
+                    };
+                }
+            };
+            bindSettingToggle('toggle-colorblind', 'colorblind');
+            bindSettingToggle('toggle-screenshake', 'screenshake');
             safeAssign('continueBtn', () => {
                 if (this.attemptsLeft > 0) {
                     if (this.healthMonitor) this.healthMonitor.logEvent('RETRY_LEVEL', { level: this.level, attemptsLeft: this.attemptsLeft });
@@ -4554,9 +4998,14 @@ window.UIController = (() => {
 
             safeAssign('nextBtnStep1', () => { 
                 if (this.healthMonitor) this.healthMonitor.logEvent('NEXT_STEP_CLICKED', { level: this.level });
-                this.transitionScreen('screen-summary', 'screen-summary-step2');
-                const phrase = Config.MOTIVATIONAL_PHRASES[Math.floor(Math.random() * Config.MOTIVATIONAL_PHRASES.length)];
-                $('motivational-phrase').innerText = phrase;
+                
+                if (this.state === GameState.GAMEOVER && this.attemptsLeft <= 0) {
+                    this.exitToMenu();
+                } else {
+                    this.transitionScreen('screen-summary', 'screen-summary-step2');
+                    const phrase = Config.MOTIVATIONAL_PHRASES[Math.floor(Math.random() * Config.MOTIVATIONAL_PHRASES.length)];
+                    $('motivational-phrase').innerText = phrase;
+                }
             });
 
             safeAssign('nextLevelBtn', () => { 
@@ -4645,10 +5094,12 @@ window.UIController = (() => {
                 e.stopPropagation();
                 if(confirm("¿Cambiar de jugador? Se borrará el progreso actual.")) { 
                     SecureStorage.remove('bubbleShooterSave'); 
+                    localStorage.removeItem('playerName');
                     $('playerNameInput').classList.remove('display-none');
                     $('playerNameInput').value = '';
                     $('welcome-message').classList.add('display-none');
                     $('resetUserBtn').classList.add('display-none');
+                    if ($('resumeSavedGameBtn')) $('resumeSavedGameBtn').classList.add('display-none');
                     const badge = $('load-badge');
                     badge.innerText = 'NO HAY PARTIDA GUARDADA';
                     badge.classList.add('empty');
@@ -4667,6 +5118,69 @@ window.UIController = (() => {
                 if (window.devConsole) {
                     window.devConsole.toggle();
                 }
+            });
+            
+            safeAssign('autoBotBtn', () => {
+                document.getElementById('pause-overlay').classList.remove('visible');
+                document.getElementById('bot-overlay').classList.add('visible');
+            });
+            
+            safeAssign('closeBotBtn', () => {
+                const isActive = document.getElementById('botMasterToggle').classList.contains('active');
+                if (!isActive) {
+                    this.botMode = 'OFF';
+                } else {
+                    const isShared = document.getElementById('botModeShared').classList.contains('active');
+                    this.botMode = isShared ? 'SHARED' : 'FULL';
+                }
+                
+                const activeSpeedBtn = document.querySelector('#botSpeedSeg .ios-segment.active');
+                if (activeSpeedBtn) {
+                    this.botSpeed = parseInt(activeSpeedBtn.getAttribute('data-val'), 10);
+                    this.botPerfect = activeSpeedBtn.getAttribute('data-perfect') === 'true';
+                } else {
+                    this.botSpeed = 800;
+                    this.botPerfect = false;
+                }
+                
+                if (this.botMode === 'SHARED') {
+                    this.botTurn = false;
+                }
+                
+                document.getElementById('bot-overlay').classList.remove('visible');
+                // Return to pause menu
+                document.getElementById('pause-overlay').classList.add('visible');
+            });
+            
+            safeAssign('botMasterToggle', () => {
+                const toggle = document.getElementById('botMasterToggle');
+                const area = document.getElementById('botSettingsArea');
+                toggle.classList.toggle('active');
+                if (toggle.classList.contains('active')) {
+                    area.style.opacity = '1';
+                    area.style.pointerEvents = 'auto';
+                } else {
+                    area.style.opacity = '0.5';
+                    area.style.pointerEvents = 'none';
+                }
+            });
+            
+            safeAssign('botModeShared', () => {
+                document.getElementById('botModeShared').classList.add('active');
+                document.getElementById('botModeFull').classList.remove('active');
+            });
+            
+            safeAssign('botModeFull', () => {
+                document.getElementById('botModeFull').classList.add('active');
+                document.getElementById('botModeShared').classList.remove('active');
+            });
+            
+            const segBtns = document.querySelectorAll('#botSpeedSeg .ios-segment');
+            segBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    segBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
             });
 
             document.addEventListener('click', () => this.audio.init(), { once: true });
@@ -4747,16 +5261,31 @@ window.UIController = (() => {
             
             const capsules = document.querySelectorAll('.hud-layer .capsule');
             if (capsules.length >= 4) {
-                const firstCapsule = capsules[0];
-                const lastCapsule = capsules[3];
-                const firstRect = firstCapsule.getBoundingClientRect();
-                const lastRect = lastCapsule.getBoundingClientRect();
+                const firstRect = capsules[0].getBoundingClientRect();
+                const lastRect = capsules[3].getBoundingClientRect();
+                
                 const centerXLevel = firstRect.left + firstRect.width / 2 - containerRect.left;
-                levelMsg.style.left = `${centerXLevel - (levelMsg.offsetWidth / 2)}px`;
+                let leftPos = centerXLevel - (levelMsg.offsetWidth / 2);
+                levelMsg.style.left = `${Math.max(10, leftPos)}px`;
                 levelMsg.style.right = 'auto';
+                
                 const centerXMenu = lastRect.left + lastRect.width / 2 - containerRect.left;
-                menuMsg.style.left = `${centerXMenu - (menuMsg.offsetWidth / 2)}px`;
+                let menuLeftPos = centerXMenu - (menuMsg.offsetWidth / 2);
+                if (menuLeftPos + menuMsg.offsetWidth > containerRect.width - 10) {
+                    menuLeftPos = containerRect.width - menuMsg.offsetWidth - 10;
+                }
+                menuMsg.style.left = `${menuLeftPos}px`;
                 menuMsg.style.right = 'auto';
+                
+                const aiPanel = document.getElementById('ai-panel');
+                if (aiPanel) {
+                    // Position the tail to point roughly to the center of the Menu text
+                    aiPanel.style.bottom = `${hudHeight + 35}px`; 
+                    aiPanel.style.right = 'auto';
+                    let aiLeft = centerXMenu - aiPanel.offsetWidth + 20; // Tail is on bottom-right, so position panel to the left of the center
+                    if (aiLeft < 10) aiLeft = 10;
+                    aiPanel.style.left = `${aiLeft}px`;
+                }
             }
         }
 
@@ -4846,7 +5375,7 @@ window.UIController = (() => {
                 maxLevelReached: this.maxLevelReached,
                 grid: this.model.grid, 
                 aiUses: this.aiUsesLeft, 
-                shots: this.shotsUntilDrop, 
+                shots: this.ammoCount, 
                 swapUses: this.swapUses, 
                 mode: this.mode, 
                 playerName: this.playerName,
@@ -4857,7 +5386,7 @@ window.UIController = (() => {
             if (this.healthMonitor) this.healthMonitor.logEvent('PROGRESS_SAVED', { level: this.level });
         }
 
-        initGame() { 
+        initGame(loadFromSave = false) { 
             const save = SecureStorage.load('bubbleShooterSave');
             if (save && save.playerName) this.playerName = save.playerName;
             else if (!this.playerName) { alert('❌ Error: Nombre de jugador no válido'); return; }
@@ -4865,10 +5394,20 @@ window.UIController = (() => {
             if (this.healthMonitor) this.healthMonitor.logEvent('GAME_INIT', { playerName: this.playerName, mode: this.mode, isGodMode: this.isGodMode });
             
             this.handleResize(); 
-            this.maxLevelReached = 0;
-            this.level = 1; 
             this.events.emit(Events.AUDIO_MELODY, {type: 'start'}); 
-            this.startLevel(); 
+            
+            if (loadFromSave && save && save.grid) {
+                this.mode = save.mode || 'experto';
+                this.maxLevelReached = save.maxLevelReached || 1;
+                this.level = save.level || 1;
+                this.totalGames = save.totalGames || 0;
+                this.retriesOnCurrentLevel = save.retriesOnCurrentLevel || 0;
+                this.startLevel(false, save);
+            } else {
+                this.maxLevelReached = 0;
+                this.level = 1; 
+                this.startLevel(); 
+            }
             
             if (!localStorage.getItem(`tutorialDone_${this.playerName}`)) {
                 this.mode = 'tutorial';
@@ -4898,7 +5437,7 @@ window.UIController = (() => {
         // ============================================================
         // startLevel - Inicialización de nivel con cola de burbujas segura
         // ============================================================
-        startLevel(isRetry = false) {
+        startLevel(isRetry = false, savedState = null) {
             if (this.healthMonitor) this.healthMonitor.logEvent('LEVEL_STARTING', { level: this.level, isRetry: isRetry, mode: this.mode, isGodMode: this.isGodMode });
             
             this.renderer.clearAll();
@@ -4928,32 +5467,37 @@ window.UIController = (() => {
                 if (this.isGodMode) godBtn.classList.remove('display-none');
                 else godBtn.classList.add('display-none');
                 
-                if (!isRetry) {
+                if (savedState) {
+                    this.aiUsesLeft = savedState.aiUses ?? 3;
+                    this.swapUses = savedState.swapUses ?? 3;
+                    this.ammoCount = savedState.shots ?? 30;
+                    this.model.grid = savedState.grid;
+                    this.model.setInitialBubbleCount();
+                    this.comboMultiplier = 1;
+                } else {
                     const l = this.level;
-                    let p = { rows: 5, colors: 3, shots: 12, level: l }; 
+                    let p = { rows: 5, colors: 3, shots: 40, level: l }; 
                     
                     if (this.mode === 'tutorial') {
-                        p = { rows: 4, colors: 3, shots: 15, level: l };
+                        p = { rows: 4, colors: 3, shots: 30, level: l };
                         this.aiUsesLeft = 3;
                         this.swapUses = 3;
                         this.attemptsLeft = 0;
                     } else if (this.mode === 'experto') {
                         this.attemptsLeft = 1;
-                        p.rows = l === 1 ? 7 : l === 2 ? 8 : l === 3 ? 9 : 10;
-                        p.colors = l === 1 ? 4 : l <= 3 ? 5 : l <= 5 ? 6 : 6;
-                        p.shots = l === 1 ? 10 : l === 2 ? 9 : l === 3 ? 8 : l === 4 ? 7 : l === 5 ? 6 : l === 6 ? 5 : 4;
+                        p.rows = Math.min(12, 6 + l); // 7 to 12
+                        p.colors = l <= 2 ? 4 : (l <= 5 ? 5 : 6);
+                        p.shots = 50 + (l * 5);
+                        p.stoneChance = l <= 3 ? 0 : (l - 3) * 0.05; // Level 4 -> 5%, Level 9 -> 30%
                         this.aiUsesLeft = 3;
                         this.swapUses = 3;
                     }
                     
-                    p.shots = Math.max(3, p.shots);
                     p.colors = Math.min(p.colors, Config.COLORS.length);
                     
-                    // Inicializar grid con sistema anti-3-consecutivos
                     this.model.initLevel(p);
                     this.model.setInitialBubbleCount();
-                    this.shotsUntilDrop = p.shots;
-                    this.shotsAvailable = p.shots;
+                    this.ammoCount = p.shots;
                     this.comboMultiplier = 1;
                     
                     if (this.healthMonitor) this.healthMonitor.logEvent('LEVEL_CONFIG', { 
@@ -4965,9 +5509,6 @@ window.UIController = (() => {
                         swapUses: this.swapUses,
                         isGodMode: this.isGodMode
                     });
-                } else {
-                    this.aiUsesLeft = 3;
-                    this.swapUses = 3;
                 }
                 
                 document.getElementById('aiCount').innerText = `${this.aiUsesLeft}`;
@@ -4994,9 +5535,16 @@ window.UIController = (() => {
                     this.loadBubble();
                 }
                 
-                const modeText = this.mode === 'tutorial' ? 'Tutorial' : 'Experto';
+                let botDesc = "";
+                if (this.botMode === 'FULL') {
+                    botDesc = "Modo Máquina";
+                } else if (this.botMode === 'SHARED') {
+                    botDesc = this.botPerfect ? "Humano Perfecto" : "Humano Casual";
+                } else {
+                    botDesc = "Humano Manual";
+                }
                 const godIndicator = this.isGodMode ? ' [DEV]' : '';
-                document.getElementById('levelEl').innerText = this.level + ' - ' + modeText + godIndicator;
+                document.getElementById('levelEl').innerText = `Nivel ${this.level} • ${botDesc}${godIndicator}`;
                 this.updateUI();
                 
                 const overlay = document.getElementById('overlay');
@@ -5159,13 +5707,18 @@ window.UIController = (() => {
                 this.guideLineAlpha = 0; 
                 document.getElementById('ai-panel').classList.remove('visible');
                 this.sessionStats.totalShots++;
+                if (this.botMode === 'SHARED') {
+                    this.botTurn = !this.botTurn;
+                }
             }
         }
 
         updateUI() { 
             const el = document.getElementById('shotsEl'); 
-            el.innerText = this.shotsUntilDrop; 
-            el.style.color = this.shotsUntilDrop <= 2 ? '#ff4444' : '#fff'; 
+            if (el) {
+                el.innerText = this.ammoCount; 
+                el.style.color = this.ammoCount <= 5 ? '#ff4444' : '#fff'; 
+            }
         }
 
         updateTimer() {
@@ -5226,7 +5779,7 @@ window.UIController = (() => {
                 this.timerRunning = false; 
                 document.getElementById('streakInfo').innerText = `Burbujas explotadas: ${this.sessionStats.successfulShots * 3 + this.sessionStats.totalDropped}`;
                 const bubbleCount = this.model.countBubbles();
-                document.getElementById('bubbleInfo').innerText = `Restantes: ${bubbleCount.remaining} | Desafío Explicalia: ${bubbleCount.remaining + (Config.MAX_LEVEL - this.level) * bubbleCount.total}`;
+                document.getElementById('bubbleInfo').innerText = `Munición Restante: ${this.ammoCount} | Burbujas en tablero: ${bubbleCount.remaining}`;
             }
         }
 
@@ -5315,7 +5868,7 @@ window.UIController = (() => {
             };
 
             const boardState = {
-              nearDeathState: this.shotsUntilDrop <= 2
+              nearDeathState: this.ammoCount <= 5
             };
             
             if(m.length >= 3) {
@@ -5345,36 +5898,14 @@ window.UIController = (() => {
             } else {
                 this.sessionStats.consecutive = 0; 
                 this.comboMultiplier = 1; 
-                this.shotsUntilDrop--;
                 result.createdCluster = false;
                 result.improvedBoard = false;
                 this.analytics.shotsSinceLastCascade++;
                 if (this.analytics.shotsSinceLastCascade >=3) this.analytics.boardNotImproving = true;
-                
-                if(this.shotsUntilDrop <= 0) {
-                    this.isDescending = true;
-                    let dropColors = this.level > 5 ? 6 : this.level > 3 ? 5 : 4;
-                    if (this.mode === 'experto') dropColors = Math.min(dropColors + 1, 6);
-                    
-                    if (this.healthMonitor) this.healthMonitor.logEvent('ADDING_CEILING', { dropColors, level: this.level });
-                    
-                    if(!this.model.addCeiling(dropColors)) {
-                        this.isDescending = false;
-                        if (this.healthMonitor) this.healthMonitor.logEvent('CEILING_FAILED_LOSS', {});
-                        return this.endGame(false);
-                    }
-                    
-                    this.events.emit(Events.AUDIO_PLAY, {type: 'drop'}); 
-                    this.shotsUntilDrop = (this.level >= 6) ? 4 : (this.level >= 4) ? 5 : 7;
-                    if (this.mode === 'experto') this.shotsUntilDrop = Math.max(3, this.shotsUntilDrop - 1);
-                    
-                    if (this.checkLossCondition()) {
-                        this.isDescending = false;
-                        return this.endGame(false);
-                    }
-                    this.isDescending = false;
-                }
             }
+            
+            this.ammoCount--;
+            if(this.ammoCount < 0) this.ammoCount = 0;
             
             let f = this.model.getFloatingBubbles();
             if(f.length) { 
@@ -5411,6 +5942,11 @@ window.UIController = (() => {
                 return this.endGame(true);
             }
             
+            if(this.ammoCount <= 0) {
+                if (this.healthMonitor) this.healthMonitor.logEvent('LOSS_NO_AMMO', {});
+                return this.endGame(false);
+            }
+            
             this.saveProgress();
             setTimeout(() => {
                 this.loadBubble();
@@ -5441,10 +5977,12 @@ window.UIController = (() => {
             }
 
             this.analytics.gameDurationMs = this.levelElapsedTime;
-            this.analytics.totalShots = this.sessionStats.totalShots;
+            this.analytics.totalShots = this.sessionStats.totalShots || 0;
+            this.analytics.successfulShots = this.sessionStats.successfulShots || 0;
+            this.analytics.totalDropped = this.sessionStats.totalDropped || 0;
             this.analytics.remainingBubbles = this.model.countBubbles().remaining;
-            this.analytics.fallenByDisconnectionRatio = this.sessionStats.totalDropped / (this.sessionStats.totalDropped + this.sessionStats.successfulShots * 3) || 0;
-            this.analytics.nearDeathState = this.shotsUntilDrop <= 2;
+            this.analytics.fallenByDisconnectionRatio = this.sessionStats.totalDropped / ((this.sessionStats.totalDropped + this.sessionStats.successfulShots * 3) || 1);
+            this.analytics.nearDeathState = this.ammoCount <= 5;
             if (this.analytics.nearDeathState) this.analytics.nearDeathMoments++;
             
             ExplicaliaSystem.onGameEnded(win ? 'win' : 'lose', this.analytics);
@@ -5480,7 +6018,15 @@ window.UIController = (() => {
                 if (card) card.classList.add('animate-in');
             }, 50);
             
-            $('sum-score').innerText = `Nivel ${this.maxLevelReached}`;
+            if (win) {
+                if (this.level >= Config.MAX_LEVEL) {
+                    $('sum-score').innerText = `JUEGO COMPLETADO`;
+                } else {
+                    $('sum-score').innerText = `NIVEL ${this.level}`;
+                }
+            } else {
+                $('sum-score').innerText = `NIVEL ${this.level}`;
+            }
             
             const mc = $('medals-container');
             if (mc) mc.innerHTML = '';
@@ -5500,25 +6046,39 @@ window.UIController = (() => {
                 t.innerText = this.level >= Config.MAX_LEVEL ? "MISIÓN CUMPLIDA" : "NIVEL COMPLETADO";
                 t.style.color = "var(--gold)";
                 nextBtn.style.display = 'block';
-                nextBtn.innerText = 'siguiente';
+                nextBtn.innerText = 'Ver Evaluación Táctica';
             } else {
                 t.innerText = "MISIÓN FALLIDA";
                 t.style.color = "#ff4444";
                 if (this.attemptsLeft <= 0) {
                     nextBtn.style.display = 'block';
-                    nextBtn.innerText = "Volver al menú";
-                    nextBtn.onclick = () => { // Nueva: Sobreescribe onclick
-                        this.exitToMenu();
-                    };
+                    nextBtn.innerText = "Volver al Menú Principal";
                 } else {
                     nextBtn.style.display = 'none';
                 }
             }
+            
+            // Populating Stats Dashboard
+            const s = this.sessionStats || {};
+            const total = Math.max(1, s.totalShots || 1);
+            
+            // Eficiencia Geométrica: % de tiros que usaron rebote
+            $('stat-efficiency').innerText = `${Math.round((s.bouncesUsed || 0) / total * 100)}%`;
+            
+            // Burbujas por tiro: Destrucción promedio
+            $('stat-ratio').innerText = `${((s.successfulShots * 3 + s.totalDropped) / total).toFixed(1)}`;
+            
+            // Precisión: % de tiros que no fueron fallos (score > 0)
+            $('stat-precision').innerText = `${Math.round((s.successfulShots || 0) / total * 100)}%`;
+            
+            // Tiempo de Decisión (si el bot jugó)
+            const botT = (s.botDecisionTimeTotal || 0) / Math.max(1, s.botShots || 1);
+            $('stat-time').innerText = s.botShots > 0 ? `${Math.round(botT)}ms` : '- (Humano)';
 
             const continueBtn = $('continueBtn');
             if (!win && this.attemptsLeft > 0 && this.mode === 'experto') {
                 continueBtn.classList.remove('display-none');
-                continueBtn.innerText = `Continuar (Te quedan ${this.attemptsLeft} oportunidades)`;
+                continueBtn.innerText = `Reintentar Nivel (${this.attemptsLeft} intentos restantes)`;
             } else {
                 continueBtn.classList.add('display-none');
             }
@@ -5672,6 +6232,97 @@ window.UIController = (() => {
             return false;
         }
 
+        executeBotShot() {
+            const startTime = performance.now();
+            let op = []; 
+            
+            const evaluate = (colorObj, isSwap) => {
+                for(let a = -Math.PI + 0.05; a <= -0.05; a += 0.02) {
+                    let s = this.physics.simulateShot(this.currentBubble.x, this.currentBubble.y, a, colorObj); 
+                    if(s && s.snap) { 
+                        s.swap = isSwap;
+                        if (s.score === 0) {
+                            let neighbors = this.model.getNeighbors(s.snap.r, s.snap.c);
+                            let potential = neighbors.filter(n => this.model.getCell(n.r, n.c)?.color.id === colorObj.id).length;
+                            s.score = potential * 5; 
+                            s.score -= (s.snap.r * 0.5); 
+                        } else {
+                            s.score += (s.snap.r * 0.5);
+                        }
+                        
+                        if (s.score < 100) {
+                            const backupGrid = this.model.cloneGrid();
+                            this.model.setCell(s.snap.r, s.snap.c, {color: colorObj});
+                            let futureMatches = this.model.findMatches(s.snap.r, s.snap.c, colorObj.id);
+                            s.futurePotential = futureMatches.length * 5;
+                            s.score += s.futurePotential;
+                            this.model.grid = backupGrid;
+                        }
+                        op.push(s);
+                    }
+                }
+            };
+
+            evaluate(this.currentBubble.color, false);
+            if (this.nextBubbleColor && this.swapUses > 0) {
+                evaluate(this.nextBubbleColor, true);
+            }
+
+            op.sort((x, y) => {
+                let xScore = x.score;
+                let yScore = y.score;
+                
+                // If neither can pop anything (score < 30), strictly prefer NOT swapping to save swaps.
+                if (xScore < 30 && yScore < 30) {
+                    if (y.swap && !x.swap) return 1; // y is worse
+                    if (x.swap && !y.swap) return -1; // x is worse
+                }
+                
+                // If one can pop something and the other cannot, heavily prefer the one that can pop.
+                if (xScore < 30 && yScore >= 30) {
+                    // Even if y is a swap, it's better than wasting a shot
+                    yScore += 500; 
+                }
+                if (yScore < 30 && xScore >= 30) {
+                    xScore += 500;
+                }
+                
+                // If both can pop something, penalize swapping so it only swaps for a massive advantage (+100 score)
+                if (xScore >= 30 && yScore >= 30) {
+                    if (x.swap) xScore -= 100;
+                    if (y.swap) yScore -= 100;
+                }
+
+                let scoreDiff = yScore - xScore;
+                if (Math.abs(scoreDiff) < 1) {
+                    if (y.swap && !x.swap) return 1;
+                    if (x.swap && !y.swap) return -1;
+                }
+                return scoreDiff;
+            });
+            
+            this.sessionStats = this.sessionStats || {};
+            this.sessionStats.botShots = (this.sessionStats.botShots || 0) + 1;
+            this.sessionStats.botDecisionTimeTotal = (this.sessionStats.botDecisionTimeTotal || 0) + (performance.now() - startTime);
+
+            if (op.length > 0) {
+                let choice = op[0];
+                // Human Casual Mode: 30% chance to pick the second best option if it exists
+                if (!this.botPerfect && op.length > 1 && Math.random() < 0.3) {
+                    choice = op[1];
+                }
+                
+                if (choice.swap) {
+                    this.swapBubbles();
+                }
+                this.currentBubble.angle = choice.angle;
+                this.fire();
+            } else {
+                this.currentBubble.angle = -Math.PI / 2;
+                this.fire();
+            }
+        }
+
         loop() {
             const execute = () => {
                 try {
@@ -5697,6 +6348,10 @@ window.UIController = (() => {
                             if (this.moveBullet(this.bullet, delta)) {
                                 let s = this.physics.snapToGrid(this.bullet.x, this.bullet.y); 
                                 if(s) { 
+                                    if (this.bullet.bounces > 0) {
+                                        this.sessionStats = this.sessionStats || {};
+                                        this.sessionStats.bouncesUsed = (this.sessionStats.bouncesUsed || 0) + 1;
+                                    }
                                     this.events.emit(Events.AUDIO_PLAY, {type: 'pop'}); 
                                     this.model.setCell(s.r, s.c, {color: this.bullet.color}); 
                                     this.resolveTurn(s.r, s.c, this.bullet.color); 
@@ -5707,6 +6362,17 @@ window.UIController = (() => {
                                 this.bullet = null; 
                             } 
                         }
+                    }
+                    
+                    const isBotTurn = this.botMode === 'FULL' || (this.botMode === 'SHARED' && this.botTurn);
+                    if (this.state === GameState.READY && this.botMode && this.botMode !== 'OFF' && isBotTurn && !this.botWaitingToFire) {
+                        this.botWaitingToFire = true;
+                        setTimeout(() => {
+                            if (this.state === GameState.READY && this.botMode !== 'OFF') {
+                                this.executeBotShot();
+                            }
+                            this.botWaitingToFire = false;
+                        }, this.botSpeed || 500);
                     }
                     
                     this.renderer.draw(this.model, this.currentBubble, this.bullet, this.nextBubbleColor, this.secondNextBubbleColor, this.guideLineAlpha); 
@@ -5777,7 +6443,7 @@ window.UIController = (() => {
                     timerRunning: window.gameInstance.timerRunning,
                     aiUsesLeft: window.gameInstance.aiUsesLeft,
                     swapUses: window.gameInstance.swapUses,
-                    shotsUntilDrop: window.gameInstance.shotsUntilDrop
+                    ammoCount: window.gameInstance.ammoCount
                 };
             }
             return 'Game no disponible';
@@ -5790,256 +6456,6 @@ window.UIController = (() => {
         console.log('  ✅ Cola de burbujas NUNCA tiene 3 consecutivas iguales');
         console.log('%cComandos: getGameState() para ver cola de burbujas', 'color: #9C27B0;');
     };
-</script>
-<script>
-    // FIX: Style bubble para Explicalia pre-message
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .explicalia-pre {
-            border-radius: 20px; 
-            background: rgba(255,255,255,0.1); 
-            padding: 12px 20px; 
-        }
-    `;
-    document.head.appendChild(style);
-
-    // FIX: Pick pre-message siempre con nombre si hay
-    const originalPickPre = ExplicaliaSystem.pickPreGameMessage;
-    ExplicaliaSystem.pickPreGameMessage = function(playerState, globalStats, name) {
-        if (name) return `Sistema Explicalia: Hola, [name]. Tablero preparado.`;
-        return originalPickPre(playerState, globalStats, name);
-    };
-
-    // FIX: Nombre coherente
-    const originalHandleMode = (mode) => {
-        const name = $('playerNameInput').value.trim();
-        if (!name) {
-            alert('Escribe tu nombre para jugar');
-            return;
-        }
-        localStorage.setItem('playerName', name);
-        gameInstance.playerName = name;
-        $('welcome-message').textContent = `Bienvenido de nuevo, ${name}`;
-        $('welcome-message').classList.remove('display-none');
-        if (window.startGame) window.startGame(mode);
-    };
-
-    // FIX: Menú sin if (!gameInstance)
-    const $ = id => document.getElementById(id);
-
-    $('accessBtn').addEventListener('click', () => {
-        $('start-main').style.display = 'block';
-        $('accessBtn').style.display = 'none';
-    });
-
-    const handleModeButton = (mode) => {
-        const name = $('playerNameInput').value.trim();
-        if (!name) {
-            alert('Escribe tu nombre para jugar');
-            return;
-        }
-        localStorage.setItem('playerName', name);
-        gameInstance.playerName = name;
-        $('welcome-message').textContent = `Bienvenido de nuevo, ${name}`;
-        $('welcome-message').classList.remove('display-none');
-        if (window.startGame) window.startGame(mode);
-    };
-
-    $('expertBtn').addEventListener('click', () => {
-        handleModeButton('classic');
-    });
-
-    $('campaignBtn').addEventListener('click', () => {
-        $('screen-start').classList.add('display-none');
-        $('screen-tutorial').classList.remove('display-none');
-    });
-
-    $('strategyTab').addEventListener('click', () => {
-        $('instructions-main').style.display = 'none';
-        $('screen-strategy').style.display = 'block';
-    });
-
-    $('backToInstructionsBtn').addEventListener('click', () => {
-        $('screen-strategy').style.display = 'none';
-        $('instructions-main').style.display = 'block';
-    });
-
-    $('startGameBtn').addEventListener('click', () => {
-        const name = localStorage.getItem('playerName');
-        localStorage.setItem(`tutorialDone_${name}`, 'true');
-        $('screen-tutorial').classList.add('display-none');
-        if (window.startGame) window.startGame('tutorial');
-    });
-
-    if (!window.startGame) {
-        window.startGame = function(mode) {
-            window.currentMode = mode;
-            window.IATacticaExplicalia.resetUsesForNewLevel();
-            $('overlay').style.display = 'none';
-            if (window.initBubbleShooter) {
-                window.initBubbleShooter(mode, window.onLevelEnd);
-            }
-        };
-    }
-
-    if (!window.onLevelEnd) {
-        window.onLevelEnd = function(datosNivel = { level: 1, score: 1000, timeMs: 30000, motivoFin: '' }) {
-            $('overlay').style.display = 'flex';
-            document.querySelectorAll('.display-none').forEach(el => el.classList.add('display-none'));
-            $('screen-summary').classList.remove('display-none');
-            $('sum-score').textContent = `Nivel ${datosNivel.level}`;
-            $('summary-title').textContent = (window.currentMode === 'tutorial') ? 'Sesión de aprendizaje completada' : 'Nivel superado';
-            $('informe-content').innerHTML = `Puntuación: ${datosNivel.score} pts<br>Tiempo: ${(datosNivel.timeMs/1000).toFixed(1)}s<br>${datosNivel.motivoFin}`;
-            $('nextBtnStep1').onclick = () => {
-                $('screen-summary').classList.add('display-none');
-                $('screen-summary-step2').classList.remove('display-none');
-            };
-        };
-    }
-
-    $('nextLevelBtn').addEventListener('click', () => {
-        $('screen-summary-step2').classList.add('display-none');
-        $('overlay').style.display = 'none';
-        window.startGame(window.currentMode);
-    });
-
-    $('saveAndContinueBtn').addEventListener('click', () => {
-        $('screen-summary-step2').classList.add('display-none');
-        $('screen-closure').classList.remove('display-none');
-    });
-
-    $('returnToMenuBtn').addEventListener('click', () => {
-        $('screen-closure').classList.add('display-none');
-        $('screen-start').classList.remove('display-none');
-        $('overlay').style.display = 'flex';
-        $('start-main').style.display = 'none';
-        $('accessBtn').style.display = 'block';
-        const name = localStorage.getItem('playerName');
-        if (name) {
-            $('playerNameInput').value = name;
-            $('welcome-message').textContent = `Bienvenido de nuevo, ${name}`;
-            $('welcome-message').classList.remove('display-none');
-        }
-    });
-
-    $('resetGameBtn').addEventListener('click', () => {
-        localStorage.clear();
-        $('playerNameInput').value = '';
-        $('welcome-message').textContent = '';
-        $('screen-closure').classList.add('display-none');
-        $('screen-start').classList.remove('display-none');
-        $('overlay').style.display = 'flex';
-        $('start-main').style.display = 'none';
-        $('accessBtn').style.display = 'block';
-    });
-
-    // FIX: Dev btn siempre visible en dev
-    if (gameInstance.isGodMode) {
-        document.getElementById('devConsoleBtn').classList.add('visible');
-    }
-
-    // 1. IA EXPLICALIA
-    let aiUses = 3;
-
-    const aiCapsule = document.getElementById('aiCapsule');
-    if (aiCapsule) {
-        aiCapsule.addEventListener('click', () => {
-            const panel = document.getElementById('ai-panel');
-            const content = document.getElementById('ai-content');
-            if (aiUses > 0) {
-                aiUses--;
-                document.getElementById('aiCount').innerText = aiUses;
-                panel.classList.add('visible');
-                content.innerHTML = `
-                    <h3 class="tactic-title">Lectura rápida del tablero</h3>
-                    <p class="tactic-stats">He revisado tu posición actual para proponerte un disparo de alto porcentaje que limpia base y libera espacio.</p>
-                    <ul style="margin-left:18px; list-style-type:disc; color:#cbd5e6; padding-left:0;">
-                        <li>Enfoca el disparo en el grupo que sostiene más burbujas.</li>
-                        <li>Evita gastar intercambios si aún tienes líneas despejadas.</li>
-                        <li>Prioriza cortes que liberen espacio en la parte superior.</li>
-                    </ul>
-                    <div class="ai-buttons">
-                        <button class="btn-manual" id="aiCloseManual">Prefiero decidir yo</button>
-                        <button class="btn-auto" id="aiAutoShot">Disparo sugerido</button>
-                    </div>
-                `;
-                document.getElementById('aiCloseManual').addEventListener('click', () => {
-                    panel.classList.remove('visible');
-                });
-                document.getElementById('aiAutoShot').addEventListener('click', () => {
-                    panel.classList.remove('visible');
-                    window.aiSuggestShot();
-                });
-            } else {
-                content.innerHTML = `
-                    <h3 class="tactic-title">Has agotado la IA</h3>
-                    <p class="tactic-stats">En este nivel ya no quedan ayudas automáticas. Ahora tu lectura del tablero es la que marca la diferencia.</p>
-                    <div class="ai-buttons">
-                        <button class="btn-manual" id="aiCloseOnly">Cerrar</button>
-                    </div>
-                `;
-                panel.classList.add('visible');
-                document.getElementById('aiCloseOnly').addEventListener('click', () => {
-                    panel.classList.remove('visible');
-                });
-            }
-        });
-    }
-
-    window.aiSuggestShot = function() {
-        console.log('[IA Explicalia] Disparo sugerido');
-    };
-
-    window.IATacticaExplicalia = {
-        resetUsesForNewLevel: function() {
-            aiUses = 3;
-            document.getElementById('aiCount').textContent = '3';
-            document.getElementById('ai-panel')?.classList.remove('visible');
-        },
-        consumeUseAndShow: function() {  
-            aiCapsule.click();
-        }
-    };
-
-    // 3. RESPONSIVE FIJO Y BLOQUEO DE ZOOM
-    const initialWidth = window.innerWidth;
-    const initialHeight = window.innerHeight;
-    const container = document.getElementById('game-container');
-    const canvas = document.getElementById('gameCanvas');
-    if (container && canvas) {
-        container.style.width = '100%';
-        container.style.maxWidth = '600px';
-        // Comentado fixed size para fix render
-        // canvas.width = 432;
-        // canvas.height = 768;
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-    }
-
-    document.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', (e) => {
-        const now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) {
-            e.preventDefault();
-        }
-        lastTouchEnd = now;
-    }, false);
-
-    window.addEventListener('resize', () => {
-        if (container && canvas) {
-            container.style.width = '100%';
-            container.style.maxWidth = '600px';
-            // Comentado fixed size
-            // canvas.width = 432;
-            // canvas.height = 768;
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-        }
-    });
 </script>
 </body>
 </html>
