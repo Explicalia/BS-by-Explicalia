@@ -5409,7 +5409,10 @@ window.UIController = (() => {
                 this.startLevel(); 
             }
             
-            if (!localStorage.getItem(`tutorialDone_${this.playerName}`)) {
+            let tutorialDone = false;
+            try { tutorialDone = localStorage.getItem(`tutorialDone_${this.playerName}`); } catch(e) {}
+            
+            if (!tutorialDone) {
                 this.mode = 'tutorial';
                 Config.MAX_LEVEL = 1;
                 this.showTutorialSequence();
@@ -5736,16 +5739,27 @@ window.UIController = (() => {
                 const step = this.tutorialSteps[stepIndex];
                 document.getElementById('tutorial-text').innerText = step.text;
                 document.getElementById('tutorial-overlay').classList.add('visible');
-                const el = document.querySelector(step.highlight);
+                
+                let el = null;
+                if (step.highlight) {
+                    try { el = document.querySelector(step.highlight); } catch(e) {}
+                }
+                
                 if (el) el.style.boxShadow = '0 0 20px #30D158';
+                
                 const btn = document.getElementById('closeTutorialBtn');
                 btn.innerText = stepIndex < this.tutorialSteps.length - 1 ? 'Siguiente' : 'Entendido';
+                
+                // Clear any previous onclick to prevent double-firing
+                btn.onclick = null;
                 btn.onclick = () => {
                     if (el) el.style.boxShadow = 'none';
                     this.hideTutorial();
                     stepIndex++;
                     if (stepIndex < this.tutorialSteps.length) {
                         setTimeout(showNext, 300);
+                    } else {
+                        try { localStorage.setItem(`tutorialDone_${this.playerName}`, 'true'); } catch(e) {}
                     }
                 };
             };
@@ -5755,7 +5769,7 @@ window.UIController = (() => {
         showTutorial(feature, text) { 
             document.getElementById('tutorial-text').innerText = text; 
             document.getElementById('tutorial-overlay').classList.add('visible'); 
-            localStorage.setItem(`first_${feature}`, 'true'); 
+            try { localStorage.setItem(`first_${feature}`, 'true'); } catch(e) {}
         }
         
         hideTutorial() { 
@@ -5988,7 +6002,7 @@ window.UIController = (() => {
             ExplicaliaSystem.onGameEnded(win ? 'win' : 'lose', this.analytics);
             
             if (win && this.mode === 'tutorial') {
-                localStorage.setItem(`tutorialDone_${this.playerName}`, 'true');
+                try { localStorage.setItem(`tutorialDone_${this.playerName}`, 'true'); } catch(e) {}
                 this.showTutorialCompleteSummary();
                 setTimeout(() => { this.transitionToExpertMode(); }, 2000);
                 return;
