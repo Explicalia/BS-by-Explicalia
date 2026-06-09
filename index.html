@@ -4544,7 +4544,7 @@ window.UIController = (() => {
                     this.playerIsNew = false;
                     this.totalGames = saved.totalGames || 0;
                     this.retriesOnCurrentLevel = saved.retriesOnCurrentLevel || 0;
-                    localStorage.setItem('playerName', saved.playerName);
+                    try { localStorage.setItem('playerName', saved.playerName); } catch(e) {}
                 } else {
                     badge.innerText = 'NO HAY PARTIDA GUARDADA'; 
                     badge.classList.add('empty'); 
@@ -4815,7 +4815,7 @@ window.UIController = (() => {
                         if (!nameInputVal) { alert('❌ Debes introducir tu nombre para jugar'); return; }
                         if (!this.validatePlayerName(nameInputVal)) return;
                         this.playerName = nameInputVal;
-                        localStorage.setItem('playerName', this.playerName);
+                        try { localStorage.setItem('playerName', this.playerName); } catch(e) {}
                     }
                 }
                 
@@ -5360,7 +5360,7 @@ window.UIController = (() => {
             let b = JSON.parse(localStorage.getItem('bubbleShooterLeaderboard')) || [];
             b.push({name: this.playerName || "Jugador", score: this.maxLevelReached});
             b.sort((x, y) => y.score - x.score);
-            localStorage.setItem('bubbleShooterLeaderboard', JSON.stringify(b.slice(0, 10)));
+            try { localStorage.setItem('bubbleShooterLeaderboard', JSON.stringify(b.slice(0, 10))); } catch(e) {}
         }
 
         saveProgress() {
