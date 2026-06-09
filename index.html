@@ -6428,8 +6428,13 @@ window.UIController = (() => {
             }, 700);
         }
         
-        window.gameInstance = new GameController(); 
-        
+        try {
+            window.gameInstance = new GameController(); 
+            console.log('Juego inicializado. Version 21-swap-fix');
+        } catch(e) {
+            alert('Error crítico en el juego:\n' + e.message);
+            console.error(e);
+        }        
         window.getGameDiagnosis = function() {
             if (window.gameInstance && window.gameInstance.healthMonitor) {
                 return window.gameInstance.healthMonitor.getQuickDiagnosis();
