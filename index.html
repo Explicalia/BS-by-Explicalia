@@ -4819,7 +4819,10 @@ window.UIController = (() => {
                     }
                 }
                 
-                if (!localStorage.getItem(`tutorialDone_${this.playerName}`)) {
+                let tutorialDone = false;
+                try { tutorialDone = localStorage.getItem(`tutorialDone_${this.playerName}`); } catch(e) {}
+                
+                if (!tutorialDone) {
                     alert('Completa el tutorial para desbloquear el modo Experto.');
                     this.mode = 'tutorial'; 
                     Config.MAX_LEVEL = 1;
