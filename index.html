@@ -4819,17 +4819,9 @@ window.UIController = (() => {
                     }
                 }
                 
-                let tutorialDone = false;
-                try { tutorialDone = localStorage.getItem(`tutorialDone_${this.playerName}`); } catch(e) {}
-                
-                if (!tutorialDone) {
-                    alert('Completa el tutorial para desbloquear el modo Experto.');
-                    this.mode = 'tutorial'; 
-                    Config.MAX_LEVEL = 1;
-                } else {
-                    this.mode = 'experto'; 
-                    Config.MAX_LEVEL = 7;
-                }
+                // Tutorial deshabilitado por petición del usuario
+                this.mode = 'experto'; 
+                Config.MAX_LEVEL = 7;
                 this.initGame();  // Direct to game
             });
 
@@ -5412,14 +5404,7 @@ window.UIController = (() => {
                 this.startLevel(); 
             }
             
-            let tutorialDone = false;
-            try { tutorialDone = localStorage.getItem(`tutorialDone_${this.playerName}`); } catch(e) {}
-            
-            if (!tutorialDone) {
-                this.mode = 'tutorial';
-                Config.MAX_LEVEL = 1;
-                this.showTutorialSequence();
-            }
+            // Tutorial check removed
             
             if (this.isGodMode) {
                 window.devConsole = new DeveloperConsole(this.healthMonitor);
