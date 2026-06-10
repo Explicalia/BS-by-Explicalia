@@ -1690,54 +1690,83 @@
         <div id="screen-summary" class="display-none">
             <div class="ios-card">
                 <div class="brand-sub" id="summary-title" style="color:var(--gold); margin-bottom:16px;">RESULTADO</div>
-                <div class="summary-score-box">
+                <div class="summary-score-box" style="margin-bottom: 20px;">
                     <div class="summary-score-val" id="sum-score">Nivel 0</div>
                 </div>
                 
-                <div class="stats-dashboard">
+                <div class="stats-dashboard" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                     <div class="stat-box">
-                        <div class="stat-val" id="stat-efficiency">0%</div>
-                        <div class="stat-label">Tiros con Rebote</div>
+                        <div class="stat-val" id="stat-efficiency" style="color: var(--ios-blue);">0</div>
+                        <div class="stat-label">Burbujas Rotas</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-val" id="stat-ratio">0</div>
-                        <div class="stat-label">Burbujas / Tiro</div>
+                        <div class="stat-val" id="stat-ratio" style="color: var(--ios-orange);">0</div>
+                        <div class="stat-label">Mejor Combo</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-val" id="stat-precision">0%</div>
-                        <div class="stat-label">Precisión</div>
+                        <div class="stat-val" id="stat-precision" style="color: var(--ios-green);">0</div>
+                        <div class="stat-label">Tiros Sobrantes</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-val" id="stat-time">0ms</div>
-                        <div class="stat-label">T. Decisión</div>
+                        <div class="stat-val" id="stat-time" style="color: var(--ios-pink);">0</div>
+                        <div class="stat-label">Caídas (Derrumbes)</div>
                     </div>
                 </div>
                 
-                <div class="quote-container" style="margin-top: 15px;">
-                    <div class="quote-sarcasm" id="sum-sarcasm"></div>
-                    <div class="quote-divider"></div>
-                    <div class="quote-motivation" id="sum-motivation"></div>
-                    <div class="quote-signature">by Explicalia System</div>
+                <div class="quote-container" style="margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+                    <div class="quote-motivation" id="sum-motivation" style="font-size: 15px; font-weight: 500; font-style: italic; color: #FFF;"></div>
                 </div>
                 
-                <div id="medals-container"></div>
+                <div id="medals-container" style="margin-bottom: 20px;"></div>
                 
-                <button id="continueBtn" class="continue-btn display-none">Continuar (Otra oportunidad)</button>
-                <button id="nextBtnStep1" class="btn-primary" style="margin-top: 15px;">Siguiente Paso</button>
+                <button id="continueBtn" class="continue-btn display-none" style="margin-bottom: 15px;">Reintentar Nivel</button>
+                <div id="win-buttons-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <button id="nextLevelBtn" class="btn-primary">Pasar al siguiente nivel</button>
+                    <button id="saveAndContinueBtn" class="btn-primary" style="background: rgba(255,255,255,0.1); color: var(--text-main);">Guardar progreso y salir</button>
+                </div>
             </div>
         </div>
 
-        <!-- PANTALLA DE RESUMEN PASO 2 -->
-        <div id="screen-summary-step2" class="display-none">
-            <div class="ios-card">
-                <div class="brand-title" style="font-size:28px; margin-bottom:5px;">Bubble Shooter</div>
-                <div class="brand-sub" style="margin-bottom:20px;">El recreo de los mayores</div>
-                <div class="quote-container" style="margin-bottom: 30px;">
-                    <div id="motivational-phrase" style="font-size: 16px; color: var(--text-main); line-height: 1.6; font-weight: 500;"></div>
+        
+        <!-- PANTALLA FINAL 7 -->
+        <div id="screen-ending-7" class="display-none">
+            <div class="ios-card" style="border: 2px solid #D4AF37; box-shadow: 0 0 30px rgba(212,175,55,0.3);">
+                <div class="brand-title" style="color: #D4AF37;">CAMPAÑA COMPLETADA</div>
+                <div class="brand-sub">Has superado los 7 niveles del recreo de los mayores.</div>
+                <div class="closure-message" style="margin: 20px 0;">Tu mente ha sido masajeada. Eres un maestro. Pero... algo oscuro aguarda más abajo.</div>
+                <div style="margin-bottom: 20px; font-size: 14px; color: var(--text-sub);">¿Te atreves a descender al Abismo?</div>
+                <button id="enterAbyssBtn" class="btn-primary" style="background: linear-gradient(135deg, #1a0b2e 0%, #4a154b 100%); border: 1px solid #8b3dff; box-shadow: 0 0 15px rgba(139,61,255,0.5);">Descender al Abismo (Niveles 8-10)</button>
+                <button id="endGameBtn7" class="btn-danger" style="margin-top: 15px;">Plantarse y Terminar</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA EXPLICATIVA DEL ABISMO -->
+        <div id="screen-abyss-tutorial" class="display-none">
+            <div class="ios-card" style="max-width: 95%; max-height: 85vh; overflow-y: auto;">
+                <div class="brand-title" style="color: #8b3dff; font-size: 24px;">BIENVENIDO AL ABISMO</div>
+                <div style="font-size: 13px; margin-bottom: 15px; color: var(--text-main); text-align: left;">
+                    En estos 3 últimos niveles la física y las reglas cambian. Prepárate para encontrar:
+                    <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.5;">
+                        <li>💣 <b>Burbujas Explosivas (Negras):</b> Al explotar destruyen todo a su alrededor (radio de 2 casillas), ¡incluso acero y piedras!</li>
+                        <li>❄️ <b>Burbujas Congeladas:</b> Cubiertas de hielo. No puedes eliminarlas directamente. Debes explotar burbujas vecinas para descongelarlas primero.</li>
+                        <li>🦠 <b>Virus (Rojas Oscuras):</b> ¡Peligro! Cada 3 disparos que hagas, el virus infectará a una burbuja vecina convirtiéndola en piedra. ¡Mátalos rápido!</li>
+                        <li>🌈 <b>Camaleones:</b> Cambian de color aleatoriamente después de CADA disparo tuyo. Requieren previsión y suerte.</li>
+                        <li>🛡️ <b>Bloques de Acero (Gris Oscuro):</b> Indestructibles. Solo caen si explota una bomba cerca. Y lo peor: NUNCA se caen por desconexión, actúan como anclajes flotantes.</li>
+                        <li>🔋 <b>Munición Extra (+5):</b> Tienen un rayo dentro. Si las explotas o las haces caer, te otorgan +5 tiros en tu cargador. Vitales para sobrevivir.</li>
+                    </ul>
                 </div>
-                
-                <button id="nextLevelBtn" class="btn-primary">Pasar al siguiente nivel</button>
-                <button id="saveAndContinueBtn" class="btn-primary" style="background: rgba(255,255,255,0.1); color: var(--text-main); margin-top: 10px;">Guardar progreso y salir</button>
+                <button id="startAbyssBtn" class="btn-primary" style="background: #8b3dff;">Aceptar mi destino</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA FINAL 10 -->
+        <div id="screen-ending-10" class="display-none">
+            <div class="ios-card" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">
+                <div class="brand-title" style="color: #000; font-size: 30px; text-shadow: none;">DIOS DE LAS BURBUJAS</div>
+                <div class="brand-sub" style="color: #333;">Has conquistado el Abismo.</div>
+                <div class="closure-message" style="color: #111; font-weight: bold; margin: 20px 0;">No hay nada más allá. Has demostrado una precisión y estrategia sobrehumanas. Explicalia se arrodilla ante ti.</div>
+                <div class="tutorial-signature" style="color: #333;">by Explicalia System</div>
+                <button id="returnToMenuBtn10" class="btn-primary" style="background: #000; color: #FFF; margin-top: 20px;">Volver al Mundo Mortal (Menú)</button>
             </div>
         </div>
 
@@ -2332,6 +2361,10 @@ window.UIController = (() => {
             { id: 5, main: '#FF5722', light: '#FF8A65', name: 'Naranja' }
         ],
         STONE_COLOR: { id: 99, main: '#757575', light: '#BDBDBD', name: 'Piedra', isStone: true },
+        STEEL_COLOR: { id: 100, main: '#333333', light: '#555555', name: 'Acero', isSteel: true },
+        BOMB_COLOR: { id: 101, main: '#000000', light: '#ff3300', name: 'Bomba', isBomb: true },
+        VIRUS_COLOR: { id: 102, main: '#4A0000', light: '#8B0000', name: 'Virus', isVirus: true },
+        CHAMELEON_COLOR: { id: 103, main: '#FF00FF', light: '#00FFFF', name: 'Camaleón', isChameleon: true },
         QUOTES: { 
             win: { 
                 sarcasm: [
@@ -3690,11 +3723,27 @@ window.UIController = (() => {
             for (let r = 0; r < p.rows; r++) {
                 for (let c = 0; c < Config.GRID_COLS; c++) {
                     if (r % 2 !== 0 && c === Config.GRID_COLS - 1) continue;
+                    
+                    let cell = null;
                     if (stoneChance > 0 && Math.random() < stoneChance) {
-                        this.grid[r][c] = { color: Config.STONE_COLOR };
+                        if (level > 7 && Math.random() < 0.2) {
+                            cell = { color: Config.STEEL_COLOR, isSteel: true };
+                        } else {
+                            cell = { color: Config.STONE_COLOR };
+                        }
                     } else {
-                        this.grid[r][c] = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
+                        cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
+                        
+                        if (level > 7) {
+                            let rnd = Math.random();
+                            if (rnd < 0.05) cell = { color: Config.BOMB_COLOR, isBomb: true };
+                            else if (rnd < 0.10) cell = { color: Config.VIRUS_COLOR, isVirus: true };
+                            else if (rnd < 0.15) { cell.isChameleon = true; cell.color = Config.CHAMELEON_COLOR; }
+                            else if (rnd < 0.25) cell.isFrozen = true;
+                            else if (rnd < 0.30) cell.hasAmmo = true;
+                        }
                     }
+                    this.grid[r][c] = cell;
                 }
             }
             
@@ -3744,7 +3793,8 @@ window.UIController = (() => {
         isEmpty() { 
             for(let r = 0; r < Config.GRID_ROWS; r++) {
                 for(let c = 0; c < Config.GRID_COLS; c++) {
-                    if (this.grid[r] && this.grid[r][c]) return false;
+                    let cell = this.grid[r] && this.grid[r][c];
+                    if (cell && !cell.isSteel && (!cell.color || !cell.color.isSteel)) return false;
                 }
             }
             return true; 
@@ -3761,7 +3811,7 @@ window.UIController = (() => {
         }
 
         findMatches(r, c, id) {
-            if (!this.grid[r] || !this.grid[r][c] || this.grid[r][c].color.id !== id || this.grid[r][c].color.isStone) return [];
+            if (!this.grid[r] || !this.grid[r][c] || this.grid[r][c].color.id !== id || this.grid[r][c].color.isStone || this.grid[r][c].isFrozen || this.grid[r][c].isSteel || this.grid[r][c].color.isSteel) return [];
             let v = new Set(), q = [{r, c}], m = []; 
             v.add(`${r},${c}`); 
             m.push({r, c});
@@ -3771,7 +3821,8 @@ window.UIController = (() => {
                 let cur = q.shift(); 
                 for (let n of this.getNeighbors(cur.r, cur.c)) { 
                     let k = `${n.r},${n.c}`; 
-                    if (this.grid[n.r] && this.grid[n.r][n.c] && !v.has(k) && this.grid[n.r][n.c].color.id === id) { 
+                    let cell = this.grid[n.r] && this.grid[n.r][n.c];
+                    if (cell && !v.has(k) && cell.color.id === id && !cell.isFrozen && !cell.isSteel && !cell.color.isSteel) { 
                         v.add(k); m.push(n); q.push(n); 
                     } 
                 } 
@@ -3782,10 +3833,14 @@ window.UIController = (() => {
 
         getFloatingBubbles() {
             let v = new Set(), q = [];
-            for (let c = 0; c < Config.GRID_COLS; c++) {
-                if (this.grid[0] && this.grid[0][c]) { 
-                    let k = `0,${c}`; 
-                    if (!v.has(k)) { q.push({r:0, c}); v.add(k); } 
+            for (let r = 0; r < Config.GRID_ROWS; r++) {
+                for (let c = 0; c < Config.GRID_COLS; c++) {
+                    let cell = this.grid[r] && this.grid[r][c];
+                    // cell.color.isSteel is used because when it's initialized, we set it as cell.color = Config.STEEL_COLOR
+                    if (cell && (r === 0 || cell.color.isSteel || cell.isSteel)) { 
+                        let k = `${r},${c}`; 
+                        if (!v.has(k)) { q.push({r, c}); v.add(k); } 
+                    }
                 }
             }
             let iter = 0;
@@ -3857,7 +3912,8 @@ window.UIController = (() => {
 
             for(let r = 0; r < Config.GRID_ROWS; r++) {
                 for(let c = 0; c < Config.GRID_COLS; c++) {
-                    if(this.grid[r] && this.grid[r][c] && !this.grid[r][c].color.isStone) { 
+                    let cell = this.grid[r][c];
+                    if(cell && cell.color && !cell.color.isStone && !cell.color.isSteel && !cell.color.isBomb && !cell.color.isVirus && !cell.color.isChameleon) { 
                         let cid = this.grid[r][c].color.id;
                         ex.add(cid); 
                         if (r > maxR) maxR = r; 
@@ -3957,7 +4013,8 @@ window.UIController = (() => {
             while (q.length && iter < Config.GRID_ROWS * Config.GRID_COLS * 2) {
                 iter++;
                 let cur = q.shift();
-                if (cur.r === 0) return true;
+                let cell = this.getCell(cur.r, cur.c);
+                if (cur.r === 0 || (cell && (cell.isSteel || cell.color.isSteel))) return true;
                 for (let n of this.getNeighbors(cur.r, cur.c)) {
                     let k = `${n.r},${n.c}`;
                     if (this.getCell(n.r, n.c) && !v.has(k)) { v.add(k); q.push(n); }
@@ -4142,7 +4199,7 @@ window.UIController = (() => {
             return {w: p.offsetWidth, h: p.offsetHeight}; 
         }
         
-        drawBubble(x, y, r, c, a = 1) {
+        drawBubble(x, y, r, c, a = 1, cell = null) {
             if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(r) || r <= 0) return;
             const actualRadius = r * GameSettings.bubbleSize;
             this.ctx.globalAlpha = a;
@@ -4159,7 +4216,56 @@ window.UIController = (() => {
             this.ctx.arc(x - actualRadius * .3, y - actualRadius * .3, actualRadius * .2, 0, Math.PI * 2);
             this.ctx.fill();
             
-            if (GameSettings.colorblind && c.id !== undefined && r > 5) {
+            if (cell) {
+                if (cell.isFrozen) {
+                    this.ctx.fillStyle = 'rgba(150, 200, 255, 0.6)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, actualRadius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `${actualRadius}px sans-serif`;
+                    this.ctx.fillText('❄️', x, y + 2);
+                } else if (cell.hasAmmo) {
+                    this.ctx.fillStyle = '#FFF';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `bold ${actualRadius * 1.2}px sans-serif`;
+                    this.ctx.fillText('⚡', x, y + 2);
+                } else if (cell.isVirus) {
+                    this.ctx.fillStyle = '#000';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `bold ${actualRadius * 1.2}px sans-serif`;
+                    this.ctx.fillText('🦠', x, y + 2);
+                } else if (cell.isBomb) {
+                    this.ctx.fillStyle = '#FFF';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `bold ${actualRadius * 1.2}px sans-serif`;
+                    this.ctx.fillText('💣', x, y + 2);
+                } else if (cell.isChameleon) {
+                    this.ctx.fillStyle = '#FFF';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `bold ${actualRadius * 1.2}px sans-serif`;
+                    this.ctx.fillText('🌈', x, y + 2);
+                } else if (cell.isSteel) {
+                    this.ctx.strokeStyle = '#000';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, actualRadius, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    this.ctx.fillStyle = '#FFF';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.font = `bold ${actualRadius * 1.2}px sans-serif`;
+                    this.ctx.fillText('🛡️', x, y + 2);
+                }
+            }
+            
+            if (GameSettings.colorblind && c.id !== undefined && r > 5 && !cell?.isFrozen && !cell?.isBomb && !cell?.isSteel && !cell?.isVirus && !cell?.hasAmmo && !cell?.isChameleon) {
                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
                 this.ctx.textAlign = 'center';
                 this.ctx.textBaseline = 'middle';
@@ -4240,7 +4346,7 @@ window.UIController = (() => {
                     let cell = model.getCell(r, c); 
                     if(cell) { 
                         const p = this.physics.getGridPos(r, c);
-                        this.drawBubble(p.x, p.y, this.physics.radius, cell.color);
+                        this.drawBubble(p.x, p.y, this.physics.radius, cell.color, 1, cell);
                     } 
                 }
             }
@@ -4821,7 +4927,7 @@ window.UIController = (() => {
                 
                 // Tutorial deshabilitado por petición del usuario
                 this.mode = 'experto'; 
-                Config.MAX_LEVEL = 7;
+                Config.MAX_LEVEL = 10;
                 this.initGame();  // Direct to game
             });
 
@@ -5479,7 +5585,7 @@ window.UIController = (() => {
                         p.rows = Math.min(12, 6 + l); // 7 to 12
                         p.colors = l <= 2 ? 4 : (l <= 5 ? 5 : 6);
                         p.shots = 50 + (l * 5);
-                        p.stoneChance = l <= 3 ? 0 : (l - 3) * 0.05; // Level 4 -> 5%, Level 9 -> 30%
+                        p.stoneChance = Math.min(0.3, l <= 3 ? 0 : (l - 3) * 0.05); // Capped at 30%
                         this.aiUsesLeft = 3;
                         this.swapUses = 3;
                     }
@@ -5860,7 +5966,43 @@ window.UIController = (() => {
             
             this.model.setCell(r, c, {color: col});
             
-            let m = this.model.findMatches(r, c, col.id);
+            let triggerBomb = false;
+            let bombCenter = null;
+            if (col.isBomb) {
+                triggerBomb = true;
+                bombCenter = {r, c};
+            } else {
+                for (let n of this.model.getNeighbors(r, c)) {
+                    let cell = this.model.getCell(n.r, n.c);
+                    if (cell && cell.color && cell.color.isBomb) {
+                        triggerBomb = true;
+                        bombCenter = n;
+                        break;
+                    }
+                }
+            }
+
+            let m = [];
+            if (triggerBomb) {
+                let v = new Set();
+                let q = [{r: bombCenter.r, c: bombCenter.c, dist: 0}];
+                while(q.length) {
+                    let cur = q.shift();
+                    let k = `${cur.r},${cur.c}`;
+                    if (!v.has(k) && this.model.getCell(cur.r, cur.c)) {
+                        v.add(k);
+                        m.push({r: cur.r, c: cur.c});
+                        if (cur.dist < 2) {
+                            for (let n of this.model.getNeighbors(cur.r, cur.c)) {
+                                q.push({r: n.r, c: n.c, dist: cur.dist + 1});
+                            }
+                        }
+                    }
+                }
+            } else {
+                m = this.model.findMatches(r, c, col.id);
+            }
+            
             let hadMatch = false;
 
             const result = {
@@ -5882,9 +6024,27 @@ window.UIController = (() => {
                 this.events.emit(Events.TEXT_FLOAT, {r: m[0].r, c: m[0].c, text: `+${m.length}`});
                 this.events.emit(Events.AUDIO_PLAY, {type: 'combo', param: this.comboMultiplier});
                 
+                let toUnfreeze = new Set();
                 m.forEach(x => {
-                    this.events.emit(Events.PARTICLES, {r: x.r, c: x.c, color: this.model.getCell(x.r, x.c).color.main}); 
+                    let cell = this.model.getCell(x.r, x.c);
+                    if (cell && cell.hasAmmo) {
+                        this.ammoCount += 5;
+                        this.events.emit(Events.TEXT_FLOAT, {r: x.r, c: x.c, text: "+5 TIROS"});
+                    }
+                    for (let n of this.model.getNeighbors(x.r, x.c)) {
+                        let nCell = this.model.getCell(n.r, n.c);
+                        if (nCell && nCell.isFrozen) toUnfreeze.add(`${n.r},${n.c}`);
+                    }
+                    this.events.emit(Events.PARTICLES, {r: x.r, c: x.c, color: cell ? cell.color.main : '#fff'}); 
                     this.model.setCell(x.r, x.c, null);
+                });
+                toUnfreeze.forEach(k => {
+                    let [fr, fc] = k.split(',').map(Number);
+                    let fCell = this.model.getCell(fr, fc);
+                    if (fCell) {
+                        fCell.isFrozen = false;
+                        this.events.emit(Events.TEXT_FLOAT, {r: fr, c: fc, text: "❄️"});
+                    }
                 });
                 
                 this.comboMultiplier++;
@@ -5916,6 +6076,10 @@ window.UIController = (() => {
                 f.forEach(x => { 
                     let cl = this.model.getCell(x.r, x.c); 
                     if(cl) { 
+                        if (cl.hasAmmo) {
+                            this.ammoCount += 5;
+                            this.events.emit(Events.TEXT_FLOAT, {r: x.r, c: x.c, text: "+5 TIROS"});
+                        }
                         this.events.emit(Events.DROP, {r: x.r, c: x.c, color: cl.color}); 
                         this.model.setCell(x.r, x.c, null); 
                         this.sessionStats.totalDropped++;
@@ -5930,6 +6094,63 @@ window.UIController = (() => {
             }
             
             ExplicaliaSystem.onShotResolved(result, boardState, this.analytics);
+
+            // CHAMELEON & VIRUS LOGIC
+            let activeColors = Array.from(this.model.getColorsInPlaySet ? this.model.getColorsInPlaySet() : []);
+            if (!activeColors.length) activeColors = Config.COLORS.slice(0, 6);
+            
+            let virusSpread = [];
+            
+            for (let rr = 0; rr < Config.GRID_ROWS; rr++) {
+                for (let cc = 0; cc < Config.GRID_COLS; cc++) {
+                    let cell = this.model.getCell(rr, cc);
+                    if (!cell) continue;
+                    
+                    if (cell.isChameleon) {
+                        // Pick random color from active colors (excluding special ones)
+                        let validColors = Config.COLORS.filter(c => !c.isStone && !c.isBomb && !c.isVirus && !c.isChameleon && !c.isSteel);
+                        cell.color = validColors[Math.floor(Math.random() * validColors.length)];
+                    }
+                    
+                    if (cell.isVirus) {
+                        // Every 3 shots the virus spreads
+                        if (!this.sessionStats.virusTurn) this.sessionStats.virusTurn = 0;
+                    }
+                }
+            }
+            
+            this.sessionStats.virusTurn = (this.sessionStats.virusTurn || 0) + 1;
+            if (this.sessionStats.virusTurn % 3 === 0) {
+                // Find all viruses and try to spread
+                for (let rr = 0; rr < Config.GRID_ROWS; rr++) {
+                    for (let cc = 0; cc < Config.GRID_COLS; cc++) {
+                        let cell = this.model.getCell(rr, cc);
+                        if (cell && cell.isVirus) {
+                            let neighbors = this.model.getNeighbors(rr, cc);
+                            let validTargets = neighbors.filter(n => {
+                                let nc = this.model.getCell(n.r, n.c);
+                                return nc && !nc.isVirus && !nc.isSteel;
+                            });
+                            if (validTargets.length) {
+                                let target = validTargets[Math.floor(Math.random() * validTargets.length)];
+                                virusSpread.push(target);
+                            }
+                        }
+                    }
+                }
+                
+                virusSpread.forEach(t => {
+                    let c = this.model.getCell(t.r, t.c);
+                    if (c) {
+                        c.isVirus = true;
+                        c.color = Config.VIRUS_COLOR;
+                        c.isChameleon = false;
+                        c.isFrozen = false;
+                        c.hasAmmo = false;
+                        this.events.emit(Events.TEXT_FLOAT, {r: t.r, c: t.c, text: "🦠"});
+                    }
+                });
+            }
 
             if (this.checkLossCondition()) {
                 if (this.healthMonitor) this.healthMonitor.logEvent('LOSS_CONDITION_MET', {});
@@ -6012,13 +6233,19 @@ window.UIController = (() => {
             $('overlay').classList.remove('hidden');
             $('overlay').style.display = 'flex';
             $('screen-start').classList.add('display-none');
-            $('screen-summary').classList.remove('display-none');
-            $('screen-summary').style.opacity = '1';
             
-            setTimeout(() => {
-                const card = $('screen-summary').querySelector('.ios-card');
-                if (card) card.classList.add('animate-in');
-            }, 50);
+            if (win && this.level === 7) {
+                $('screen-ending-7').classList.remove('display-none');
+            } else if (win && this.level === 10) {
+                $('screen-ending-10').classList.remove('display-none');
+            } else {
+                $('screen-summary').classList.remove('display-none');
+                $('screen-summary').style.opacity = '1';
+                setTimeout(() => {
+                    const card = $('screen-summary').querySelector('.ios-card');
+                    if (card) card.classList.add('animate-in');
+                }, 50);
+            }
             
             if (win) {
                 if (this.level >= Config.MAX_LEVEL) {
@@ -6043,46 +6270,49 @@ window.UIController = (() => {
             }
             
             const t = $('summary-title');
-            const nextBtn = $('nextBtnStep1');
             if (win) {
                 t.innerText = this.level >= Config.MAX_LEVEL ? "MISIÓN CUMPLIDA" : "NIVEL COMPLETADO";
                 t.style.color = "var(--gold)";
-                nextBtn.style.display = 'block';
-                nextBtn.innerText = 'Ver Evaluación Táctica';
             } else {
                 t.innerText = "MISIÓN FALLIDA";
                 t.style.color = "#ff4444";
-                if (this.attemptsLeft <= 0) {
-                    nextBtn.style.display = 'block';
-                    nextBtn.innerText = "Volver al Menú Principal";
-                } else {
-                    nextBtn.style.display = 'none';
-                }
             }
             
             // Populating Stats Dashboard
             const s = this.sessionStats || {};
-            const total = Math.max(1, s.totalShots || 1);
             
-            // Eficiencia Geométrica: % de tiros que usaron rebote
-            $('stat-efficiency').innerText = `${Math.round((s.bouncesUsed || 0) / total * 100)}%`;
-            
-            // Burbujas por tiro: Destrucción promedio
-            $('stat-ratio').innerText = `${((s.successfulShots * 3 + s.totalDropped) / total).toFixed(1)}`;
-            
-            // Precisión: % de tiros que no fueron fallos (score > 0)
-            $('stat-precision').innerText = `${Math.round((s.successfulShots || 0) / total * 100)}%`;
-            
-            // Tiempo de Decisión (si el bot jugó)
-            const botT = (s.botDecisionTimeTotal || 0) / Math.max(1, s.botShots || 1);
-            $('stat-time').innerText = s.botShots > 0 ? `${Math.round(botT)}ms` : '- (Humano)';
+            $('stat-efficiency').innerText = `${(s.successfulShots || 0) * 3 + (s.totalDropped || 0)}`;
+            $('stat-ratio').innerText = `x${s.maxCombo || 1}`;
+            $('stat-precision').innerText = `${this.ammoCount}`;
+            $('stat-time').innerText = `${s.totalDropped || 0}`;
 
             const continueBtn = $('continueBtn');
-            if (!win && this.attemptsLeft > 0 && this.mode === 'experto') {
-                continueBtn.classList.remove('display-none');
-                continueBtn.innerText = `Reintentar Nivel (${this.attemptsLeft} intentos restantes)`;
-            } else {
+            const winBtns = $('win-buttons-container');
+            
+            if (win) {
                 continueBtn.classList.add('display-none');
+                if (winBtns) winBtns.style.display = 'flex';
+                $('sum-motivation').innerText = Config.MOTIVATIONAL_PHRASES[Math.floor(Math.random() * Config.MOTIVATIONAL_PHRASES.length)];
+            } else {
+                if (winBtns) winBtns.style.display = 'none';
+                $('sum-motivation').innerText = "Has caído. Pero siempre puedes volver a levantarte.";
+                if (this.attemptsLeft > 0 && this.mode === 'experto') {
+                    continueBtn.classList.remove('display-none');
+                    continueBtn.innerText = `Reintentar Nivel (${this.attemptsLeft} intentos restantes)`;
+                } else {
+                    continueBtn.classList.remove('display-none');
+                    continueBtn.innerText = `Volver al Menú Principal`;
+                    continueBtn.onclick = () => {
+                        this.saveToLeaderboard();
+                        this.level = 1; 
+                        this.maxLevelReached = 0;
+                        if (window.SecureStorage) SecureStorage.remove('bubbleShooterSave'); 
+                        this.state = GameState.MENU;
+                        this.cleanupGameState();
+                        this.resetUIState();
+                        this.transitionScreen(null, 'screen-start');
+                    };
+                }
             }
 
             this.playerIsNew = false;
