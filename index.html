@@ -3701,11 +3701,11 @@ window.UIController = (() => {
                         
                         if (level > 7) {
                             let rnd = Math.random();
-                            if (rnd < 0.05) cell = { color: Config.BOMB_COLOR, isBomb: true };
-                            else if (rnd < 0.10) cell = { color: Config.VIRUS_COLOR, isVirus: true };
-                            else if (rnd < 0.15) { cell.isChameleon = true; cell.color = Config.CHAMELEON_COLOR; }
-                            else if (rnd < 0.25) cell.isFrozen = true;
-                            else if (rnd < 0.30) cell.hasAmmo = true;
+                            if (rnd < 0.015) cell = { color: Config.BOMB_COLOR, isBomb: true };
+                            else if (rnd < 0.030) cell = { color: Config.VIRUS_COLOR, isVirus: true };
+                            else if (rnd < 0.050) { cell.isChameleon = true; cell.color = Config.CHAMELEON_COLOR; }
+                            else if (rnd < 0.100) cell.isFrozen = true;
+                            else if (rnd < 0.200) cell.hasAmmo = true;
                         }
                     }
                     this.grid[r][c] = cell;
@@ -5545,10 +5545,10 @@ window.UIController = (() => {
                         this.attemptsLeft = 0;
                     } else if (this.mode === 'experto') {
                         this.attemptsLeft = 1;
-                        p.rows = Math.min(12, 6 + l); // 7 to 12
+                        p.rows = Math.min(10, 6 + Math.floor(l / 2)); 
                         p.colors = l <= 2 ? 4 : (l <= 5 ? 5 : 6);
-                        p.shots = 50 + (l * 5);
-                        p.stoneChance = Math.min(0.3, l <= 3 ? 0 : (l - 3) * 0.05); // Capped at 30%
+                        p.shots = 60 + (l * 5);
+                        p.stoneChance = Math.min(0.12, l <= 3 ? 0 : (l - 3) * 0.02); 
                         this.aiUsesLeft = 3;
                         this.swapUses = 3;
                     }
