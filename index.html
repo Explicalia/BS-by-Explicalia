@@ -6263,17 +6263,17 @@ window.UIController = (() => {
             const winBtns = $('win-buttons-container');
             
             if (win) {
-                continueBtn.classList.add('display-none');
+                continueBtn.style.display = 'none';
                 if (winBtns) winBtns.style.display = 'flex';
                 $('sum-motivation').innerText = Config.MOTIVATIONAL_PHRASES[Math.floor(Math.random() * Config.MOTIVATIONAL_PHRASES.length)];
             } else {
                 if (winBtns) winBtns.style.display = 'none';
                 $('sum-motivation').innerText = "Has caído. Pero siempre puedes volver a levantarte.";
                 if (this.attemptsLeft > 0 && this.mode === 'experto') {
-                    continueBtn.classList.remove('display-none');
+                    continueBtn.style.display = 'flex';
                     continueBtn.innerText = `Reintentar Nivel (${this.attemptsLeft} intentos restantes)`;
                 } else {
-                    continueBtn.classList.remove('display-none');
+                    continueBtn.style.display = 'flex';
                     continueBtn.innerText = `Volver al Menú Principal`;
                     continueBtn.onclick = () => {
                         this.saveToLeaderboard();
