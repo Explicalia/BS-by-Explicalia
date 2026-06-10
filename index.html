@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script>
+        // Prevenir el cuelgue (freeze) de Safari/WebKit al usar confirm() o alert() dentro de un iframe
+        window.alert = function(msg) { console.log("ALERT:", msg); };
+        window.confirm = function(msg) { console.log("CONFIRM:", msg); return true; };
+        window.prompt = function(msg) { console.log("PROMPT:", msg); return "Admin"; };
+    </script>
     <meta charset="UTF-8">
     <meta name="description" content="Juega a Bubble Shooter gratis en Explicalia. Juego de estrategia cognitiva y lógica sin descargas.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -4834,6 +4840,9 @@ window.UIController = (() => {
                 const el = $(id);
                 if (el) {
                     el.onclick = (e) => {
+                        if (el.dataset.isProcessing) return;
+                        el.dataset.isProcessing = "true";
+                        
                         if (this.healthMonitor) {
                             this.healthMonitor.trackButtonClick(id, true);
                         }
@@ -4844,6 +4853,10 @@ window.UIController = (() => {
                                 this.healthMonitor.logEvent('BUTTON_HANDLER_ERROR', { buttonId: id, error: err.message });
                             }
                             console.error(`Error in button ${id}:`, err);
+                        } finally {
+                            setTimeout(() => {
+                                el.dataset.isProcessing = "";
+                            }, 500);
                         }
                     };
                     if (this.healthMonitor) {
