@@ -6196,6 +6196,7 @@ window.UIController = (() => {
             this.state = win ? GameState.PAUSED : GameState.GAMEOVER;
             
             // Clear canvas so the pointer and trajectory disappear
+            this.currentBubble = null;
             if (this.renderer && this.renderer.ctx) {
                 this.renderer.clearAll();
                 this.renderer.ctx.clearRect(0, 0, this.renderer.canvas.width, this.renderer.canvas.height);
