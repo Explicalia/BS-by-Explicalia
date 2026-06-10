@@ -5050,16 +5050,16 @@ window.UIController = (() => {
             bindSettingToggle('toggle-colorblind', 'colorblind');
             bindSettingToggle('toggle-screenshake', 'screenshake');
             safeAssign('continueBtn', () => {
-                if (this.attemptsLeft > 0) {
-                    if (this.healthMonitor) this.healthMonitor.logEvent('RETRY_LEVEL', { level: this.level, attemptsLeft: this.attemptsLeft });
-                    this.transitionScreen('screen-summary', null);
-                    setTimeout(() => {
-                        $('screen-summary').classList.add('display-none');
-                        $('overlay').classList.add('hidden');
-                        this.renderer.canvas.style.display = 'block';
-                        this.startLevel(true);
-                    }, 300);
-                }
+                if (this.healthMonitor) this.healthMonitor.logEvent('RETRY_LEVEL', { level: this.level });
+                
+                $('screen-summary').style.opacity = '0';
+                setTimeout(() => {
+                    $('screen-summary').classList.add('display-none');
+                    $('overlay').classList.add('hidden');
+                    $('overlay').style.display = 'none';
+                    this.renderer.canvas.style.display = 'block';
+                    this.startLevel(true);
+                }, 300);
             });
 
             safeAssign('nextBtnStep1', () => { 
@@ -5089,10 +5089,12 @@ window.UIController = (() => {
                 } else { 
                     this.level++; 
                     if (this.healthMonitor) this.healthMonitor.logEvent('ADVANCING_TO_LEVEL', { newLevel: this.level });
-                    $('screen-summary-step2').style.opacity = '0';
+                    
+                    $('screen-summary').style.opacity = '0';
                     setTimeout(() => {
-                        $('screen-summary-step2').classList.add('display-none');
+                        $('screen-summary').classList.add('display-none');
                         $('overlay').classList.add('hidden');
+                        $('overlay').style.display = 'none';
                         this.renderer.canvas.style.display = 'block';
                         this.renderer.canvas.style.opacity = '1';
                         this.startLevel(false); 
@@ -5117,15 +5119,11 @@ window.UIController = (() => {
                 const hud = document.querySelector('.hud-layer');
                 if (hud) hud.style.opacity = '0';
                 
-                $('screen-summary-step2').classList.add('display-none');
-                $('screen-summary-step2').style.opacity = '0';
+                $('screen-summary').classList.add('display-none');
+                $('overlay').style.display = 'none';
+                $('screen-start').classList.remove('display-none');
                 
-                $('screen-closure').classList.remove('display-none');
-                $('screen-closure').style.opacity = '1';
-                
-                $('overlay').classList.remove('hidden');
-                $('overlay').style.display = 'flex';
-                $('overlay').style.opacity = '1';
+                this.resetUIState();
             });
 
             safeAssign('returnToMenuBtn', (e) => {
