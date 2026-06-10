@@ -2055,7 +2055,7 @@ const ExplicaliaSystem = (() => {
 
   function onGameEnded(result, analytics) {
     const name = getPlayerNameSafe();
-    const lines = pickPostGameMessages(result, analytics, name);
+    const lines = [];
     if (lines && lines.length) {
       window.UIController.showExplicaliaPostMessage(lines, analytics);
     }
@@ -2093,42 +2093,7 @@ const ExplicaliaSystem = (() => {
     return personalizeText(randomFrom(candidates).text, name, analytics);
   }
 
-    function pickPostGameMessages(result, analytics, name) {
-        const context = "post";
-        const env = { result, analytics: analytics || {} };
-        const candidates = QUOTES.filter(q =>
-            q.context === context && evaluateCondition(q.condition, env)
-        );
-        
-        const lines = [];
-        
-        // 1. Datos matemáticos espectaculares
-        if (analytics) {
-            const ratio = analytics.totalShots > 0 ? ((analytics.successfulShots * 3 + analytics.totalDropped) / analytics.totalShots).toFixed(2) : 0;
-            const time = Math.round(analytics.gameDurationMs / 1000);
-            lines.push(`DATOS TÁCTICOS: Eficiencia ${ratio}x | Nodos destruidos: ${analytics.successfulShots * 3 + analytics.totalDropped} | Ejecución: ${time}s`);
-        }
-        
-        // 2. Frase sarcástica/contextual (de los QUOTES)
-        if (candidates.length) {
-            const primary = randomFrom(candidates);
-            lines.push(personalizeText(primary.text, name, analytics));
-        } else {
-            lines.push(result === 'win' ? "Has sobrevivido a la probabilidad." : "La gravedad y la probabilidad han ganado esta vez.");
-        }
-        
-        // 3. Frase inspiradora/motivacional premium
-        const motivacionales = [
-            "El caos es solo orden esperando ser descifrado.",
-            "Un disparo perfecto no requiere fuerza, requiere visión.",
-            "Las grandes victorias se construyen burbuja a burbuja.",
-            "No juegues contra el tablero, haz que el tablero juegue para ti.",
-            "Cada fallo es simplemente telemetría para tu próximo éxito."
-        ];
-        lines.push(randomFrom(motivacionales));
-
-        return lines;
-    }
+    
 
   // --- Utilidades internas ---
 
@@ -3657,7 +3622,7 @@ window.UIController = (() => {
                 } else if (context === 'in_game') {
                     message = ExplicaliaSystem.pickInGameMessage(env.result, env.boardState, env.analytics, name);
                 } else {
-                    message = ExplicaliaSystem.pickPostGameMessages('win', env.analytics, name).join('\n');
+                    message = "";
                 }
                 
                 document.getElementById('expl-result').innerText = message || 'No message found for conditions.';
