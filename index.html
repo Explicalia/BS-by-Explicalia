@@ -6272,35 +6272,36 @@ window.UIController = (() => {
             
             this.sessionStats.virusTurn = (this.sessionStats.virusTurn || 0) + 1;
             if (this.sessionStats.virusTurn % 3 === 0) {
-                // Find all viruses and try to spread
+                // Find all viruses
+                let viruses = [];
                 for (let rr = 0; rr < Config.GRID_ROWS; rr++) {
                     for (let cc = 0; cc < Config.GRID_COLS; cc++) {
                         let cell = this.model.getCell(rr, cc);
-                        if (cell && cell.isVirus) {
-                            let neighbors = this.model.getNeighbors(rr, cc);
-                            let validTargets = neighbors.filter(n => {
-                                let nc = this.model.getCell(n.r, n.c);
-                                return nc && !nc.isVirus && !nc.isSteel;
-                            });
-                            if (validTargets.length) {
-                                let target = validTargets[Math.floor(Math.random() * validTargets.length)];
-                                virusSpread.push(target);
-                            }
-                        }
+                        if (cell && cell.isVirus) viruses.push({r: rr, c: cc});
                     }
                 }
                 
-                virusSpread.forEach(t => {
-                    let c = this.model.getCell(t.r, t.c);
-                    if (c) {
-                        c.isVirus = true;
-                        c.color = Config.VIRUS_COLOR;
-                        c.isChameleon = false;
-                        c.isFrozen = false;
-                        c.hasAmmo = false;
-                        this.events.emit(Events.TEXT_FLOAT, {r: t.r, c: t.c, text: "🦠"});
+                // Pick exactly ONE virus to spread to avoid exponential growth
+                if (viruses.length > 0) {
+                    let v = viruses[Math.floor(Math.random() * viruses.length)];
+                    let neighbors = this.model.getNeighbors(v.r, v.c);
+                    let validTargets = neighbors.filter(n => {
+                        let nc = this.model.getCell(n.r, n.c);
+                        return nc && !nc.isVirus && !nc.isSteel && !nc.isBomb;
+                    });
+                    if (validTargets.length) {
+                        let t = validTargets[Math.floor(Math.random() * validTargets.length)];
+                        let c = this.model.getCell(t.r, t.c);
+                        if (c) {
+                            c.isVirus = true;
+                            c.color = Config.VIRUS_COLOR;
+                            c.isChameleon = false;
+                            c.isFrozen = false;
+                            c.hasAmmo = false;
+                            this.events.emit(Events.TEXT_FLOAT, {r: t.r, c: t.c, text: "🦠"});
+                        }
                     }
-                });
+                }
             }
 
             if (this.checkLossCondition()) {
@@ -6793,7 +6794,10 @@ window.UIController = (() => {
         const brandSub = document.querySelector('.brand-sub');
         const accessBtn = document.getElementById('accessBtn');
         
-        if (brandTitle && brandSub && accessBtn) {
+        const startMain = document.getElementById('start-main');
+        if (accessBtn) accessBtn.style.display = 'none'; // Hide the redundant button forever
+        
+        if (brandTitle && brandSub && startMain) {
             setTimeout(() => { 
                 brandTitle.style.transition = 'opacity 0.6s ease-out'; 
                 brandTitle.style.opacity = '1'; 
@@ -6803,8 +6807,12 @@ window.UIController = (() => {
                 brandSub.style.opacity = '1'; 
             }, 400);
             setTimeout(() => { 
-                accessBtn.style.transition = 'opacity 0.6s ease-out'; 
-                accessBtn.style.opacity = '1'; 
+                startMain.style.display = 'block';
+                startMain.style.opacity = '0';
+                setTimeout(() => {
+                    startMain.style.transition = 'opacity 0.6s ease-out'; 
+                    startMain.style.opacity = '1'; 
+                }, 10);
             }, 700);
         }
         
