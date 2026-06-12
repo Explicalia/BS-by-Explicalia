@@ -5947,9 +5947,6 @@ window.UIController = (() => {
                 this.guideLineAlpha = 0; 
                 document.getElementById('ai-panel').classList.remove('visible');
                 this.sessionStats.totalShots++;
-                if (this.botMode === 'SHARED') {
-                    this.botTurn = !this.botTurn;
-                }
             }
         }
 
@@ -6215,6 +6212,11 @@ window.UIController = (() => {
                 result.improvedBoard = false;
                 this.analytics.shotsSinceLastCascade++;
                 if (this.analytics.shotsSinceLastCascade >=3) this.analytics.boardNotImproving = true;
+                
+                // MULTIPLAYER LOGIC: Lose turn if no explosion
+                if (this.botMode === 'SHARED') {
+                    this.botTurn = !this.botTurn;
+                }
             }
             
             this.ammoCount--;
