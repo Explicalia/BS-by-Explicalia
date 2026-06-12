@@ -157,6 +157,14 @@
         background: rgba(60, 50, 30, 0.7);
     }
 
+    button:active, .btn-primary:active, .btn-secondary:active, .pause-btn:active, .action-btn:active, .nav-btn:active, .capsule:active, #menu-message:active {
+        background-color: var(--green) !important;
+        transform: scale(0.95) !important;
+        transition: background-color 0.1s, transform 0.1s;
+        box-shadow: 0 0 15px var(--green) !important;
+        color: white !important;
+    }
+
     .ios-list-group {
         background: rgba(255, 255, 255, 0.08);
         border-radius: 12px;
@@ -455,7 +463,36 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
-        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-abyss {
+        background: linear-gradient(135deg, #8b3dff 0%, #6a1fcf 100%);
+        color: #ffffff;
+        border: 1px solid rgba(139,61,255,0.6);
+        box-shadow: 0 0 20px rgba(139,61,255,0.4);
+        padding: 16px 20px;
+        width: 100%;
+        border-radius: 9999px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-abyss:hover {
+        box-shadow: 0 0 30px rgba(139,61,255,0.7);
+    }
+    
+    .btn-abyss:active {
+        transform: scale(0.96);
+        opacity: 0.9;
     }
 
     .btn-primary:active {
@@ -1172,7 +1209,7 @@
         z-index: 11;
         opacity: 0;
         transition: opacity 0.4s ease-out, transform 0.1s;
-        background: rgba(30, 30, 30, 0.5);
+        background: rgba(30, 30, 30, 0.7);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 0.5px solid rgba(255, 255, 255, 0.15);
@@ -1190,7 +1227,7 @@
     }
 
     #menu-message:active {
-        background: rgba(60, 60, 60, 0.7);
+        background: rgba(60, 60, 60, 0.9);
         transform: scale(0.95);
     }
 
@@ -1351,7 +1388,6 @@
         }
         .capsule span { font-size: 12px; }
         .capsule label { font-size: 8px; }
-        #menu-message { font-size: 11px; }
         .ios-segment {
             padding: 5px 8px;
             font-size: 11px;
@@ -1603,7 +1639,7 @@
     <canvas id="gameCanvas"></canvas>
     <div id="flash-overlay"></div>
     <button id="manualFireBtn" class="hidden">DISPARAR</button>
-    <button id="godNextBtn" class="display-none">GOD: NEXT LEVEL</button>
+    <button id="godNextBtn" class="display-none">DIOS: SIG. NIVEL</button>
     <button id="devConsoleBtn" class="display-none">🔧</button>
 
     <div id="ai-panel">
@@ -1621,7 +1657,7 @@
             </span>
         </div>
         <div class="capsule" id="aiCapsule">
-            <label>IA HELP</label>
+            <label>AYUDA IA</label>
             <span id="aiCount">3</span>
         </div>
         <div class="capsule">
@@ -1629,7 +1665,7 @@
             <span id="shotsEl">8</span>
         </div>
         <div class="capsule" id="swapCapsule">
-            <label>Color swap</label>
+            <label>Cambiar Color</label>
             <span id="swapCount">3</span>
             <svg class="icon-svg" viewBox="0 0 24 24">
                 <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
@@ -1736,13 +1772,15 @@
         
         <!-- PANTALLA FINAL 7 -->
         <div id="screen-ending-7" class="display-none">
-            <div class="ios-card" style="border: 2px solid #D4AF37; box-shadow: 0 0 30px rgba(212,175,55,0.3);">
-                <div class="brand-title" style="color: #D4AF37;">CAMPAÑA COMPLETADA</div>
-                <div class="brand-sub">Has superado los 7 niveles del recreo de los mayores.</div>
-                <div class="closure-message" style="margin: 20px 0;">Tu mente ha sido masajeada. Eres un maestro. Pero... algo oscuro aguarda más abajo.</div>
-                <div style="margin-bottom: 20px; font-size: 14px; color: var(--text-sub);">¿Te atreves a descender al Abismo?</div>
-                <button id="enterAbyssBtn" class="btn-primary" style="background: linear-gradient(135deg, #1a0b2e 0%, #4a154b 100%); border: 1px solid #8b3dff; box-shadow: 0 0 15px rgba(139,61,255,0.5);">Descender al Abismo (Niveles 8-10)</button>
-                <button id="endGameBtn7" class="btn-danger" style="margin-top: 15px;">Plantarse y Terminar</button>
+            <div class="ios-card" style="background: linear-gradient(160deg, #1a1a2e 0%, #1a0b2e 50%, #0d0d1a 100%); border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212,175,55,0.2);">
+                <div style="font-size: 48px; margin-bottom: 8px;">&#127942;</div>
+                <div class="brand-title" style="color: var(--gold);">CAMPA&#209;A COMPLETADA</div>
+                <div class="brand-sub" style="color: var(--gold-light); opacity: 0.8; margin-bottom: 16px;">Has superado los 7 niveles del recreo de los mayores.</div>
+                <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 0 auto 20px auto;"></div>
+                <div class="closure-message" style="color: var(--text-main); margin: 0 0 16px 0;">Tu mente ha sido masajeada. Eres un maestro.</div>
+                <div style="font-size: 14px; color: var(--gold-light); margin-bottom: 20px; text-align: center; line-height: 1.5;">Pero algo oscuro aguarda m&aacute;s abajo&hellip;</div>
+                <button id="enterAbyssBtn" class="btn-abyss">&#9760; Descender al Abismo (Niveles 8&ndash;10)</button>
+                <button id="endGameBtn7" class="btn-text" style="color: var(--text-sub); margin-top: 12px; z-index: 10; position: relative;">Plantarse y Terminar</button>
             </div>
         </div>
 
@@ -1761,18 +1799,22 @@
                         <li>🔋 <b>Munición Extra (+5):</b> Tienen un rayo dentro. Si las explotas o las haces caer, te otorgan +5 tiros en tu cargador. Vitales para sobrevivir.</li>
                     </ul>
                 </div>
-                <button id="startAbyssBtn" class="btn-primary" style="background: #8b3dff;">Aceptar mi destino</button>
+                <button id="startAbyssBtn" class="btn-abyss">Aceptar mi destino ☠</button>
             </div>
         </div>
 
         <!-- PANTALLA FINAL 10 -->
         <div id="screen-ending-10" class="display-none">
-            <div class="ios-card" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">
-                <div class="brand-title" style="color: #000; font-size: 30px; text-shadow: none;">DIOS DE LAS BURBUJAS</div>
-                <div class="brand-sub" style="color: #333;">Has conquistado el Abismo.</div>
-                <div class="closure-message" style="color: #111; font-weight: bold; margin: 20px 0;">No hay nada más allá. Has demostrado una precisión y estrategia sobrehumanas. Explicalia se arrodilla ante ti.</div>
-                <div class="tutorial-signature" style="color: #333;">by Explicalia System</div>
-                <button id="returnToMenuBtn10" class="btn-primary" style="background: #000; color: #FFF; margin-top: 20px;">Volver al Mundo Mortal (Menú)</button>
+            <div class="ios-card" style="background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%); border: 2px solid var(--gold); box-shadow: 0 0 40px rgba(212,175,55,0.3), inset 0 0 30px rgba(212,175,55,0.05);">
+                <div style="font-size: 48px; margin-bottom: 8px;">&#127775;</div>
+                <div class="brand-title" style="font-size: 28px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px;">DIOS DE LAS BURBUJAS</div>
+                <div class="brand-sub" style="color: var(--gold-light); opacity: 0.9; margin-bottom: 20px;">Has conquistado el Abismo</div>
+                <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 0 auto 20px auto;"></div>
+                <div class="closure-message" style="color: var(--text-main); font-weight: 500; margin: 0 0 16px 0; line-height: 1.6;">No hay nada m&aacute;s all&aacute;. Has demostrado una precisi&oacute;n y estrategia sobrehumanas.</div>
+                <div style="font-size: 14px; color: var(--gold-light); font-style: italic; margin-bottom: 20px; opacity: 0.8;">Explicalia se arrodilla ante ti.</div>
+                <div class="tutorial-signature" style="color: var(--gold); margin-bottom: 24px;">by Explicalia System</div>
+                <button id="returnToMenuBtn10" class="btn-primary" style="background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%); color: #1a1100; border: 1px solid rgba(255,255,255,0.3); margin-top: 10px;">Volver al Mundo Mortal</button>
+                <button id="replayGameBtn10" class="btn-text" style="color: var(--gold-light); margin-top: 12px;">Volver a jugar desde el inicio</button>
             </div>
         </div>
 
@@ -3478,7 +3520,7 @@ window.UIController = (() => {
                 <div style="margin-bottom: 15px;">
                     <div style="color: #30D158; font-weight: bold; margin-bottom: 5px;">🎮 ESTADO DEL JUEGO</div>
                     <div>Estado: <span style="color: #FFD60A">${g.state}</span></div>
-                    <div>Nivel: ${g.level} (max: ${g.maxLevelReached})</div>
+                    <div>Nivel: ${g.level}</div>
                     <div>Modo: ${g.mode} ${g.isGodMode ? '(GOD)' : ''}</div>
                     <div>Burbuja actual: ${g.currentBubble ? '✅ ' + (g.currentBubble.color ? g.currentBubble.color.name : 'SIN COLOR') : '❌ NULL'}</div>
                     <div>Bala: ${g.bullet ? '✅ En vuelo' : '❌ NULL'}</div>
@@ -3696,22 +3738,31 @@ window.UIController = (() => {
                     if (r % 2 !== 0 && c === Config.GRID_COLS - 1) continue;
                     
                     let cell = null;
-                    if (stoneChance > 0 && Math.random() < stoneChance) {
-                        if (level > 7 && Math.random() < 0.2) {
+                    if (level === 8) {
+                        cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
+                        if (Math.random() < 0.25) cell.isFrozen = true;
+                        else if (r % 3 === 0 && Math.random() < 0.3) cell.hasAmmo = true;
+                    } else if (level === 9) {
+                        cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
+                        let rnd = Math.random();
+                        if (rnd < 0.05) cell = { color: Config.VIRUS_COLOR, isVirus: true };
+                        else if (rnd < 0.08) cell = { color: Config.BOMB_COLOR, isBomb: true };
+                        else if (rnd < 0.15) cell.hasAmmo = true;
+                    } else if (level >= 10) {
+                        if (r < 3 && c % 4 === 2) {
                             cell = { color: Config.STEEL_COLOR, isSteel: true };
                         } else {
-                            cell = { color: Config.STONE_COLOR };
+                            cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
+                            let rnd = Math.random();
+                            if (rnd < 0.03) cell = { color: Config.BOMB_COLOR, isBomb: true };
+                            else if (rnd < 0.06) { cell.isChameleon = true; cell.color = Config.CHAMELEON_COLOR; }
+                            else if (rnd < 0.15) cell.hasAmmo = true;
                         }
                     } else {
-                        cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
-                        
-                        if (level > 7) {
-                            let rnd = Math.random();
-                            if (rnd < 0.015) cell = { color: Config.BOMB_COLOR, isBomb: true };
-                            else if (rnd < 0.030) cell = { color: Config.VIRUS_COLOR, isVirus: true };
-                            else if (rnd < 0.050) { cell.isChameleon = true; cell.color = Config.CHAMELEON_COLOR; }
-                            else if (rnd < 0.100) cell.isFrozen = true;
-                            else if (rnd < 0.200) cell.hasAmmo = true;
+                        if (stoneChance > 0 && Math.random() < stoneChance) {
+                            cell = { color: Config.STONE_COLOR };
+                        } else {
+                            cell = { color: Config.COLORS[Math.floor(Math.random() * numColors)] };
                         }
                     }
                     this.grid[r][c] = cell;
@@ -4095,17 +4146,51 @@ window.UIController = (() => {
                     let snap = this.snapToGrid(ghost.x, ghost.y);
                     if (!snap) return null;
                     this.model.setCell(snap.r, snap.c, {color});
+                    
+                    let bombTriggered = false;
+                    for (let n of this.model.getNeighbors(snap.r, snap.c)) {
+                        let cell = this.model.getCell(n.r, n.c);
+                        if (cell && cell.color && cell.color.isBomb) {
+                            bombTriggered = true;
+                            break;
+                        }
+                    }
+
                     let matches = this.model.findMatches(snap.r, snap.c, color.id);
                     let score = 0;
+                    
+                    if (bombTriggered) {
+                        score += 300; 
+                    }
+                    
                     if (matches.length >= 3) {
                         score += matches.length * 10;
                         if (matches.length > 5) score += 50; 
+                        
+                        let ammoCount = matches.filter(m => {
+                            let cell = this.model.getCell(m.r, m.c);
+                            return cell && cell.hasAmmo;
+                        }).length;
+                        score += ammoCount * 150; 
+                        
+                        let virusDestroyCount = 0;
+                        matches.forEach(m => {
+                            for (let n of this.model.getNeighbors(m.r, m.c)) {
+                                let nCell = this.model.getCell(n.r, n.c);
+                                if (nCell && nCell.isVirus) virusDestroyCount++;
+                            }
+                        });
+                        score += virusDestroyCount * 80; // Reward destroying viruses
                         
                         // Simulate dropped bubbles for accurate heuristic
                         let backup = matches.map(m => ({r: m.r, c: m.c, cell: this.model.getCell(m.r, m.c)}));
                         backup.forEach(m => this.model.setCell(m.r, m.c, null));
                         let drops = this.model.getFloatingBubbles();
-                        score += drops.length * 30; // High value for dropping bubbles
+                        score += drops.length * 40; 
+                        
+                        let droppedAmmo = drops.filter(d => d.cell && d.cell.hasAmmo).length;
+                        score += droppedAmmo * 150;
+
                         backup.forEach(m => this.model.setCell(m.r, m.c, m.cell));
                     }
                     this.model.setCell(snap.r, snap.c, null); 
@@ -5159,6 +5244,88 @@ window.UIController = (() => {
                 }
             });
 
+            safeAssign('enterAbyssBtn', (e) => {
+                e.stopPropagation();
+                if (this.healthMonitor) this.healthMonitor.logEvent('ENTER_ABYSS_CLICKED', { currentLevel: this.level });
+                $('screen-ending-7').classList.add('display-none');
+                $('screen-abyss-tutorial').classList.remove('display-none');
+            });
+
+            safeAssign('endGameBtn7', (e) => {
+                e.stopPropagation();
+                if (this.healthMonitor) this.healthMonitor.logEvent('END_GAME_7_CLICKED', { currentLevel: this.level });
+                $('screen-ending-7').classList.add('display-none');
+                $('screen-closure').classList.remove('display-none');
+                $('screen-closure').style.opacity = '1';
+            });
+
+            safeAssign('startAbyssBtn', (e) => {
+                e.stopPropagation();
+                if (this.healthMonitor) this.healthMonitor.logEvent('START_ABYSS_CLICKED', {});
+                $('screen-abyss-tutorial').classList.add('display-none');
+                $('overlay').classList.add('hidden');
+                $('overlay').style.display = 'none';
+                this.level = 8;
+                this.renderer.canvas.style.display = 'block';
+                this.renderer.canvas.style.opacity = '1';
+                const hud = document.querySelector('.hud-layer');
+                if (hud) hud.style.opacity = '1';
+                this.startLevel(false);
+            });
+
+            safeAssign('returnToMenuBtn10', (e) => {
+                e.stopPropagation();
+                if (this.healthMonitor) this.healthMonitor.logEvent('RETURN_TO_MENU_10_CLICKED', {});
+                
+                $('screen-ending-10').classList.add('display-none');
+                $('screen-ending-10').style.opacity = '0';
+                
+                this.saveToLeaderboard();
+                this.cleanupGameState();
+                this.resetUIState();
+                
+                $('overlay').classList.remove('hidden');
+                $('overlay').style.display = 'flex';
+                
+                $('screen-start').classList.remove('display-none');
+                $('screen-start').style.opacity = '1';
+                
+                const startMain = $('start-main');
+                if (startMain) {
+                    startMain.style.display = 'block';
+                    startMain.style.opacity = '1';
+                }
+                
+                this.loadProgress();
+            });
+
+            safeAssign('replayGameBtn10', (e) => {
+                e.stopPropagation();
+                if (this.healthMonitor) this.healthMonitor.logEvent('REPLAY_GAME_10_CLICKED', {});
+                this.saveToLeaderboard();
+                this.level = 1;
+                this.maxLevelReached = 0;
+                SecureStorage.remove('bubbleShooterSave');
+                
+                $('screen-ending-10').classList.add('display-none');
+                $('screen-ending-10').style.opacity = '0';
+                
+                this.cleanupGameState();
+                this.resetUIState();
+                
+                $('overlay').classList.remove('hidden');
+                $('overlay').style.display = 'flex';
+                
+                $('screen-start').classList.remove('display-none');
+                $('screen-start').style.opacity = '1';
+                
+                const startMain = $('start-main');
+                if (startMain) {
+                    startMain.style.display = 'block';
+                    startMain.style.opacity = '1';
+                }
+            });
+
             safeAssign('closeTutorialBtn', (e) => { 
                 e.stopPropagation(); 
                 this.hideTutorial(); 
@@ -5558,10 +5725,10 @@ window.UIController = (() => {
                         this.attemptsLeft = 0;
                     } else if (this.mode === 'experto') {
                         this.attemptsLeft = 1;
-                        p.rows = Math.min(10, 6 + Math.floor(l / 2)); 
-                        p.colors = l <= 2 ? 4 : (l <= 5 ? 5 : 6);
-                        p.shots = 60 + (l * 5);
-                        p.stoneChance = Math.min(0.12, l <= 3 ? 0 : (l - 3) * 0.02); 
+                        p.rows = Math.min(9, 4 + Math.floor(l / 2)); // Slightly fewer rows for better breathing room
+                        p.colors = l <= 3 ? 4 : (l <= 5 ? 5 : 6); // Delay 5 and 6 colors slightly
+                        p.shots = 60 + (l * 12); // Give significantly more ammo for the higher color counts
+                        p.stoneChance = Math.min(0.10, l <= 3 ? 0 : (l - 3) * 0.015); // Stones scale slower
                         this.aiUsesLeft = 3;
                         this.swapUses = 3;
                     }
@@ -5617,7 +5784,7 @@ window.UIController = (() => {
                     botDesc = "Humano Manual";
                 }
                 const godIndicator = this.isGodMode ? ' [DEV]' : '';
-                document.getElementById('levelEl').innerText = `Nivel ${this.level} • ${botDesc}${godIndicator}`;
+                document.getElementById('levelEl').innerText = `Nivel ${this.level}`;
                 this.updateUI();
                 
                 const overlay = document.getElementById('overlay');
@@ -6001,6 +6168,7 @@ window.UIController = (() => {
                 this.events.emit(Events.AUDIO_PLAY, {type: 'combo', param: this.comboMultiplier});
                 
                 let toUnfreeze = new Set();
+                let toDestroyVirus = new Set();
                 m.forEach(x => {
                     let cell = this.model.getCell(x.r, x.c);
                     if (cell && cell.hasAmmo) {
@@ -6010,6 +6178,7 @@ window.UIController = (() => {
                     for (let n of this.model.getNeighbors(x.r, x.c)) {
                         let nCell = this.model.getCell(n.r, n.c);
                         if (nCell && nCell.isFrozen) toUnfreeze.add(`${n.r},${n.c}`);
+                        if (nCell && nCell.isVirus) toDestroyVirus.add(`${n.r},${n.c}`);
                     }
                     this.events.emit(Events.PARTICLES, {r: x.r, c: x.c, color: cell ? cell.color.main : '#fff'}); 
                     this.model.setCell(x.r, x.c, null);
@@ -6021,6 +6190,12 @@ window.UIController = (() => {
                         fCell.isFrozen = false;
                         this.events.emit(Events.TEXT_FLOAT, {r: fr, c: fc, text: "❄️"});
                     }
+                });
+                toDestroyVirus.forEach(k => {
+                    let [vr, vc] = k.split(',').map(Number);
+                    this.events.emit(Events.PARTICLES, {r: vr, c: vc, color: '#4A0000'}); 
+                    this.events.emit(Events.TEXT_FLOAT, {r: vr, c: vc, text: "💉"});
+                    this.model.setCell(vr, vc, null);
                 });
                 
                 this.comboMultiplier++;
@@ -6217,6 +6392,12 @@ window.UIController = (() => {
             $('overlay').classList.remove('hidden');
             $('overlay').style.display = 'flex';
             $('screen-start').classList.add('display-none');
+            $('screen-summary').classList.add('display-none');
+            $('screen-summary').querySelector('.ios-card')?.classList.remove('animate-in');
+            $('screen-ending-7').classList.add('display-none');
+            $('screen-ending-10').classList.add('display-none');
+            $('screen-abyss-tutorial').classList.add('display-none');
+            $('screen-closure').classList.add('display-none');
             
             if (win && this.level === 7) {
                 $('screen-ending-7').classList.remove('display-none');
